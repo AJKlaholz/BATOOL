@@ -1,12 +1,13 @@
 package application.control;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Searchterm {
 	private String name;
-	private HashMap<Date, Double> DateListFromSearchterm = new HashMap<Date, Double>();
+	private HashMap<Calendar, Double> DateListFromSearchterm = new HashMap<Calendar, Double>();
 	
 	public String getName() {
 		return name;
@@ -15,12 +16,12 @@ public class Searchterm {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public void addDateAndPopularity(Date d, double pop){
-		this.DateListFromSearchterm.put(d, pop);
+	public void addDateAndPopularity(Calendar calendar, double pop){
+		this.DateListFromSearchterm.put(calendar, pop);
 	}
 	
 	
-	public Map<Date, Double> getDateListFromSearchterm(){
+	public Map<Calendar, Double> getDateListFromSearchterm(){
 		return this.DateListFromSearchterm;
 	}
 

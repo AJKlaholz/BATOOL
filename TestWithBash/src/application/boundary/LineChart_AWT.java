@@ -2,31 +2,22 @@ package application.boundary;
 
 import org.jfree.chart.ChartPanel;
 
-import java.awt.Color;
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.ui.ApplicationFrame;
-import org.jfree.ui.RefineryUtilities;
+import org.joda.time.Instant;
+import org.joda.time.LocalDate;
 
 import application.control.GPGTrends;
 import application.control.GPRecordManager;
 import application.control.Record;
 
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.xy.XYDataset;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.data.time.Day;
-import org.jfree.data.time.Month;
-import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;	
 
@@ -52,8 +43,8 @@ public class LineChart_AWT extends ApplicationFrame
       
          
       ChartPanel chartPanel = new ChartPanel( lineChart );
-     
-      chartPanel.setPreferredSize( new java.awt.Dimension(1500, 500 ) );
+      chartPanel.setPreferredSize( new java.awt.Dimension(1500,1000 ) );
+      chartPanel.setMouseZoomable(true, false);
       setContentPane( chartPanel );
      
    }
@@ -65,12 +56,25 @@ public class LineChart_AWT extends ApplicationFrame
 	  TimeSeriesCollection  dataset = new TimeSeriesCollection ( );  
      for(int i=0;i<gt.getListOfSTerm().size();i++){
     	 TimeSeries xys = new TimeSeries(gt.getListOfSTerm().get(i).getName()) ; 
-     for(Map.Entry<Date, Double> entry : gt.getListOfSTerm().get(i).getDateListFromSearchterm().entrySet()){
-    	 //dataset.addValue( 15 , "schools" , "1970" );
-    	//System.out.println(entry.getKey().getDay());
-    	//System.out.println(  entry.getKey().getDay()+"   " +entry.getKey().getMonth()+"  "+entry.getKey().getYear());
+     for(Entry<Calendar, Double> entry : gt.getListOfSTerm().get(i).getDateListFromSearchterm().entrySet()){
+    // System.out.print(gt.getListOfSTerm().get(i).getName()+": ");
+    	
+   /* 	 Calendar cal = Calendar.getInstance();
+    	 cal.setTime(entry.getKey());
+    	 System.out.println(cal.get(Calendar.DAY_OF_MONTH) +" " +cal.get(Calendar.MONTH)+1+" "+cal.get(Calendar.YEAR) +"VAL:" + entry.getValue());
+     xys.addOrUpdate((new Day(cal.get(Calendar.DAY_OF_MONTH),cal.get(Calendar.MONTH)+1,cal.get(Calendar.YEAR))), entry.getValue());
+     
+     */
     	 
-    	 xys.addOrUpdate((new Day(entry.getKey().getDay(),entry.getKey().getMonth()+1,entry.getKey().getYear())), entry.getValue());
+    	/* Date bb = new Date();
+    	Instant in = bb.toInstant();
+    	 LocalDate ld = entry.getKey().to*/
+    	 
+    	
+    	 xys.addOrUpdate((new Day(entry.getKey().get(Calendar.DAY_OF_MONTH),(entry.getKey().get(Calendar.MONTH))+1,entry.getKey().get(Calendar.YEAR))), entry.getValue());
+    	 
+    	 
+    	 
      }
      dataset.addSeries(xys);
       
