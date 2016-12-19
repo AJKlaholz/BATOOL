@@ -33,7 +33,7 @@ public class GPGTrends {
 			while(sc.hasNext()){
 				sc.nextLine();
 				sc.nextLine();
-				//sc.nextLine();
+				sc.nextLine();
 				String sdate = sc.next();
 				String year = "";
 				String month = "";
