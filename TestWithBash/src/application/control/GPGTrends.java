@@ -22,6 +22,7 @@ import application.boundary.Command;
 public class GPGTrends {
 
 	public static Record parsDataFromJavaIntoRecord(Record re){
+		int count = 0;
 		try {
 			   Collections.sort(re.getListOfSTerm(), new Comparator<Searchterm>() {
 			        @Override
@@ -30,10 +31,16 @@ public class GPGTrends {
 			        }
 			    });
 			Scanner sc = new Scanner(new File("C:\\Users\\Adrian\\Documents\\pytrends-master1.2\\examples\\table.txt"));
+			sc.nextLine();
+			sc.nextLine();
 			while(sc.hasNext()){
-				sc.nextLine();
-				sc.nextLine();
-				sc.nextLine();
+				
+				
+					
+					
+				
+				count++;
+			
 				String sdate = sc.next();
 				String year = "";
 				String month = "";
@@ -51,7 +58,7 @@ public class GPGTrends {
 				}
 				
 				Calendar calendar =new GregorianCalendar(Integer.parseInt(year),Integer.parseInt(month)-1,Integer.parseInt(day));
-				//calendar.set(year, month,day);
+				
 				for(int i=0;i<re.getListOfSTerm().size();i++){
 					
 					try{re.getListOfSTerm().get(i).addDateAndPopularity(calendar, Double.parseDouble(sc.next()));
@@ -60,25 +67,15 @@ public class GPGTrends {
 						re.getListOfSTerm().get(i).addDateAndPopularity(calendar, 0.0);
 					}
 					}
-			 	
-		/*		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-				Date date = null;
-				try {
-					date = format.parse(sc.next());
-				} catch (ParseException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}*/
 
-				
-				
 				
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		System.out.println(count);
+		System.out.println("MAP GRÖßE" +re.getListOfSTerm().get(0).getDateListFromSearchterm().entrySet().size());
 		
 		return re;
 

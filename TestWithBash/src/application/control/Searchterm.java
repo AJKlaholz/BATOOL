@@ -4,6 +4,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class Searchterm {
 	private String name;
@@ -21,7 +23,7 @@ public class Searchterm {
 	}
 	
 	
-	public Map<Calendar, Double> getDateListFromSearchterm(){
+	public HashMap<Calendar, Double> getDateListFromSearchterm(){
 		return this.DateListFromSearchterm;
 	}
 
