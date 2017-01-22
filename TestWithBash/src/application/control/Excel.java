@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -30,15 +32,15 @@ import application.boundary.OpenFile;
 
 public class Excel {
 
-	public void saveToExcel(Record record) {
-		System.out.println(record.getListOfSTerm().get(0).getName());
-		int rowI=2;
+	public void saveToExcel(Record record, Product product) {
+
+		int rowI = 2;
 
 		// Erstellt eine XLSX Datei
 		Workbook datei = new XSSFWorkbook();
 
 		Sheet blatt = datei.createSheet(WorkbookUtil.createSafeSheetName("Ergebnis"));
-		
+
 		Row reihe = blatt.createRow(0);
 		Cell zelle = reihe.createCell(0);
 		zelle.setCellValue("Ergebnis: ");
@@ -48,55 +50,55 @@ public class Excel {
 		zelle2.setCellValue("Datum");
 		for (int i = 1; i <= record.getListOfSTerm().size(); i++) {
 			Cell zelle3 = reihe2.createCell(i);
-			zelle3.setCellValue(record.getListOfSTerm().get(i-1).getName());
+			zelle3.setCellValue(record.getListOfSTerm().get(i - 1).getName());
 		}
-		Cell zelle4 = reihe2.createCell(record.getListOfSTerm().size()+1);
+		Cell zelle4 = reihe2.createCell(record.getListOfSTerm().size() + 1);
 		zelle4.setCellValue("Produkt");
 
-		
-	/*	
-		for(int i=0;i<record.getListOfSTerm().get(0).getDateListFromSearchterm().size();i++){
-			Row reihetmp = blatt.createRow(i+2);
-			Cell zelletmp1 = reihetmp.createCell(0);
-			
-			
-			zelletmp1.setCellValue(record.getListOfSTerm().get(0).getDateListFromSearchterm().);
-			for(int l=0;l<record.getListOfSTerm().size()+2;l++){
-			Cell zelletmp = reihetmp.createCell(i);
-			
+		Row reihe1 = null;
+
+		System.out.println("MAP GRÖßE" + record.getListOfSTerm().get(0).getDateListFromSearchterm().entrySet().size());
+		for (int i = 0; i < record.getListOfSTerm().size(); i++) {
+
+			for (Entry<Calendar, Double> entry : record.getListOfSTerm().get(i).getDateListFromSearchterm()
+					.entrySet()) {
+				System.out.println("Tag: " + entry.getKey().get(Calendar.DAY_OF_MONTH) + "Monat: "
+						+ (entry.getKey().get(Calendar.MONTH) + 1) + "Value: " + entry.getValue());
+				if (i == 0) {
+					reihe1 = blatt.createRow(rowI++);
+				} else {
+					reihe1 = blatt.getRow(rowI++);
+				}
+
+				Cell cell = reihe1.createCell(i + 1);
+
+				cell.setCellValue(entry.getValue());
+
 			}
+
+			rowI = 2;
 		}
-		*/
-		
-		Row reihe1 =blatt.createRow(rowI);
-		
-		System.out.println("MAP GRÖßE" +record.getListOfSTerm().get(0).getDateListFromSearchterm().entrySet().size());
-		for(int i=0;i<record.getListOfSTerm().size();i++){
-			
-			//System.out.println("4444444444444");
-			
-		for(Entry<Calendar, Double> entry : record.getListOfSTerm().get(i).getDateListFromSearchterm().entrySet()){
-			System.out.println("Tag: "+entry.getKey().get(Calendar.DAY_OF_MONTH)+"Monat: "+entry.getKey().get(Calendar.MONTH)+1);
-			Cell cell = reihe1.createCell(i+1);
-			
-			cell.setCellValue(entry.getValue());
-			
-			if(i==0){
-			reihe1 = blatt.createRow(rowI++);
-			}else{
-			reihe1 = blatt.getRow(rowI++);	
-			}
-			
-		}
-		
-			rowI=2;
-		}
-		for(Entry<Calendar, Double> entry : record.getListOfSTerm().get(0).getDateListFromSearchterm().entrySet()){
+		System.out.println(blatt.getRow(3).getCell(0));
+		Iterator<Entry<Calendar, Double>> it = product.getOrderDRequest().entrySet().iterator();
+
+		Entry<Calendar, Double> test = it.next();
+		for (Entry<Calendar, Double> entry : record.getListOfSTerm().get(0).getDateListFromSearchterm().entrySet()) {
+			reihe1 = blatt.getRow(rowI++);
 			Cell cell = reihe1.createCell(0);
-			cell.setCellValue(entry.getKey().get(Calendar.DAY_OF_MONTH)+"."+(entry.getKey().get(Calendar.MONTH)+1)+"."+entry.getKey().get(Calendar.YEAR));
-			reihe1 = blatt.getRow(rowI++);	
+			cell.setCellValue(entry.getKey().get(Calendar.DAY_OF_MONTH) + "." + (entry.getKey().get(Calendar.MONTH) + 1)
+					+ "." + entry.getKey().get(Calendar.YEAR));
+			System.out.println(
+					"Datensatzdatum: " + entry.getKey().getTime() + " Produktdatum: " + test.getKey().getTime());
+			if (entry.getKey().getTime().equals(test.getKey().getTime())) {
+				Cell cell2 = reihe1.createCell(record.getListOfSTerm().size() + 1);
+				cell2.setCellValue(test.getValue());
+				if (it.hasNext()) {
+					test = it.next();
+				}
+			}
+
 		}
-		
+		System.out.println(blatt.getRow(3).getCell(0));
 		try {
 			FileOutputStream output = new FileOutputStream("ExcelTest2.xlsx");
 			datei.write(output);
@@ -104,12 +106,12 @@ public class Excel {
 		} catch (Exception e) {
 
 		}
-
+		System.out.println(blatt.getRow(3).getCell(0));
 	}// saveExcel
 
 	public static Product ExceltoJava() {
 		Product tmp = new Product();
-		HashMap<Calendar, Double> orderDrequested = new HashMap<Calendar, Double>();
+		TreeMap<Calendar, Double> orderDrequested = new TreeMap<Calendar, Double>();
 
 		try {
 

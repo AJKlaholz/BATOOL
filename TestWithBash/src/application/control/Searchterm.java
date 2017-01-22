@@ -9,7 +9,7 @@ import java.util.TreeSet;
 
 public class Searchterm {
 	private String name;
-	private HashMap<Calendar, Double> DateListFromSearchterm = new HashMap<Calendar, Double>();
+	private TreeMap<Calendar, Double> DateListFromSearchterm = new TreeMap<Calendar, Double>();
 	
 	public String getName() {
 		return name;
@@ -23,7 +23,7 @@ public class Searchterm {
 	}
 	
 	
-	public HashMap<Calendar, Double> getDateListFromSearchterm(){
+	public TreeMap<Calendar, Double> getDateListFromSearchterm(){
 		return this.DateListFromSearchterm;
 	}
 

@@ -138,16 +138,15 @@ public class MockGUI extends JFrame implements ActionListener {
 
 			}
 		});
-		
-		
+
 		downloadb.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
-				System.out.println("1111111111111");
-		Excel e = new Excel();
-		System.out.println("2222222222222222222");
-		GPRecordManager rm = new GPRecordManager();
-		e.saveToExcel(GPGTrends.parsDataFromJavaIntoRecord(rm.getRecord(fieldList[0].getText())));
-		System.out.println("333333333333333");
+		
+				Excel e = new Excel();
+			
+				GPRecordManager rm = new GPRecordManager();
+				e.saveToExcel(GPGTrends.parsDataFromJavaIntoRecord(rm.getRecord(fieldList[0].getText())), e.ExceltoJava());
+			
 			}
 		});
 
@@ -183,7 +182,7 @@ public class MockGUI extends JFrame implements ActionListener {
 	}
 
 	public static void main(String[] args) {
-		
+
 		new MockGUI();
 	}
 
