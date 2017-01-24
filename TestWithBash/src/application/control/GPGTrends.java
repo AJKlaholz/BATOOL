@@ -70,8 +70,6 @@ public class GPGTrends {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(count);
-		System.out.println("MAP GRÖßE" + re.getListOfSTerm().get(0).getDateListFromSearchterm().entrySet().size());
 
 		return re;
 

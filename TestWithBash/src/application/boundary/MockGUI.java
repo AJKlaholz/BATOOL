@@ -56,10 +56,11 @@ public class MockGUI extends JFrame implements ActionListener {
 		downloadb.setBounds(500, 300, 100, 30);
 		resultb.setBounds(620, 300, 100, 30);
 		cm.setBounds(260, 300, 100, 30);
-		fileChooseb.setBounds(380, 100, 100, 30);
+		fileChooseb.setBounds(380, 100, 150, 30);
 
 		// adds ALL items from database record to jcombobox
 		GPRecordManager rm = new GPRecordManager();
+		final OpenFile of = new OpenFile();
 
 		for (int i = 0; i < rm.getAllRecordnames().size(); i++) {
 			cm.addItem(rm.getAllRecordnames().get(i));
@@ -130,7 +131,7 @@ public class MockGUI extends JFrame implements ActionListener {
 			public void actionPerformed(ActionEvent ev) {
 
 				LineChart_AWT chart = new LineChart_AWT("Corelation", "correlation between searchterms and product",
-						fieldList[0].getText());
+						fieldList[0].getText(),of);
 
 				chart.pack();
 				RefineryUtilities.centerFrameOnScreen(chart);
@@ -145,7 +146,7 @@ public class MockGUI extends JFrame implements ActionListener {
 				Excel e = new Excel();
 			
 				GPRecordManager rm = new GPRecordManager();
-				e.saveToExcel(GPGTrends.parsDataFromJavaIntoRecord(rm.getRecord(fieldList[0].getText())), e.ExceltoJava());
+				e.saveToExcel(GPGTrends.parsDataFromJavaIntoRecord(rm.getRecord(fieldList[0].getText())), e.ExceltoJava(of));
 			
 			}
 		});
@@ -153,11 +154,10 @@ public class MockGUI extends JFrame implements ActionListener {
 		fileChooseb.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
 
-				OpenFile of = new OpenFile();
+				
 
 				try {
-					of.PickMe();
-					System.out.println(of.PickMe());
+					of.setFile();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

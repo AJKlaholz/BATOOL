@@ -7,13 +7,16 @@ import javax.swing.JFileChooser;
 
 public class OpenFile {
 
+	private File file=null;
 	JFileChooser fileChooser = new JFileChooser();
 	StringBuilder sb = new StringBuilder();
 
-	public File PickMe() throws Exception {
+	
+	public void setFile(){
 		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 			// get the file
-			File file = fileChooser.getSelectedFile();
+			this.file = fileChooser.getSelectedFile();
+			System.out.println(file.getName());
 			/*
 			 * //create a scanner for the file Scanner input = new
 			 * Scanner(file);
@@ -23,11 +26,15 @@ public class OpenFile {
 			 * 
 			 * input.close();
 			 */
-			return file;
+			
 		} else {
 			sb.append("No file was selected");
 		}
-		return null;
+	
+	}
+	public File PickMe() throws Exception {
+		System.out.println(file);
+			return this.file;
 
 	}
 

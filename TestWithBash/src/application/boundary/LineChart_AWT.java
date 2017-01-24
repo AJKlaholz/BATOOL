@@ -47,13 +47,11 @@ EXPORT TO EXEL: www.jfree.org/forum/viewtopic.php?f=3&t=4607
 */
 public class LineChart_AWT extends ApplicationFrame {
 	GPRecordManager rm = new GPRecordManager();
-	GPGTrends t = new GPGTrends();
 
-	public LineChart_AWT(String applicationTitle, String chartTitle, String r) {
+	public LineChart_AWT(String applicationTitle, String chartTitle, String r,OpenFile of) {
 		super(applicationTitle);
 		JFreeChart lineChart = ChartFactory.createTimeSeriesChart(chartTitle, "time interval", "popularity",
-				createDataset(GPGTrends.parsDataFromJavaIntoRecord(t.parsDataFromJavaIntoRecord(rm.getRecord(r)))),
-				true, true, false);
+				createDataset(GPGTrends.parsDataFromJavaIntoRecord(rm.getRecord(r)), of), true, true, false);
 
 		ChartPanel chartPanel = new ChartPanel(lineChart);
 		chartPanel.setPreferredSize(new java.awt.Dimension(1500, 1000));
@@ -62,8 +60,7 @@ public class LineChart_AWT extends ApplicationFrame {
 
 	}
 
-	public TimeSeriesCollection createDataset(Record gt) {
-		System.out.println("MAP GRÖßE" + gt.getListOfSTerm().get(0).getDateListFromSearchterm().entrySet().size());
+	public TimeSeriesCollection createDataset(Record gt, OpenFile of) {
 		TimeSeriesCollection dataset = new TimeSeriesCollection();
 		for (int i = 0; i < gt.getListOfSTerm().size(); i++) {
 			TimeSeries xys = new TimeSeries(gt.getListOfSTerm().get(i).getName());
@@ -77,10 +74,11 @@ public class LineChart_AWT extends ApplicationFrame {
 			dataset.addSeries(xys);
 
 		}
-		TimeSeries pro = new TimeSeries(Excel.ExceltoJava().getName());
-		for (Entry<Calendar, Double> entry : Excel.ExceltoJava().getOrderDRequest().entrySet()) {
+		//TimeSeries pro = new TimeSeries(Excel.ExceltoJava().getName());
+		TimeSeries pro = new TimeSeries(Excel.ExceltoJava(of).getName());
+		for (Entry<Calendar, Double> entry : Excel.ExceltoJava(of).getOrderDRequest().entrySet()) {
 			pro.addOrUpdate((new Day(entry.getKey().get(Calendar.DAY_OF_MONTH),
-					(entry.getKey().get(Calendar.MONTH)) - 1, entry.getKey().get(Calendar.YEAR))), entry.getValue());
+					(entry.getKey().get(Calendar.MONTH)) + 1, entry.getKey().get(Calendar.YEAR))), entry.getValue());
 		}
 		dataset.addSeries(pro);
 		return dataset;

@@ -30,8 +30,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import application.boundary.OpenFile;
 
-public class Excel {
 
+
+
+public class Excel {
+	
 	public void saveToExcel(Record record, Product product) {
 
 		int rowI = 2;
@@ -109,16 +112,18 @@ public class Excel {
 		System.out.println(blatt.getRow(3).getCell(0));
 	}// saveExcel
 
-	public static Product ExceltoJava() {
+	public static Product ExceltoJava(OpenFile of) {
 		Product tmp = new Product();
 		TreeMap<Calendar, Double> orderDrequested = new TreeMap<Calendar, Double>();
 
 		try {
 
-			OpenFile of = new OpenFile();
+			
 			// FileInputStream file = new FileInputStream(new
 			// File("C:\\Users\\Adrian\\Documents\\pytrends-master1.2\\Excel\\Sales_Daten_Sennheiser_BAGehrig.xlsx"));
-			FileInputStream file = new FileInputStream(new File("" + of.PickMe()));
+			FileInputStream file = new FileInputStream(of.PickMe().getPath());
+		
+		
 
 			// Create Workbook instance holding reference to .xlsx file
 			XSSFWorkbook workbook = new XSSFWorkbook(file);
