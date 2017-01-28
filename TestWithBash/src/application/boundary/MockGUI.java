@@ -11,6 +11,8 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 
 import org.jfree.ui.RefineryUtilities;
@@ -93,6 +95,18 @@ public class MockGUI extends JFrame implements ActionListener {
 
 		loadb.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
+				JFrame meinJFrame = new JFrame();
+				meinJFrame.setSize(300, 100);
+				meinJFrame.setLocationRelativeTo(null);
+				JPanel meinPanel = new JPanel();
+				JProgressBar meinLadebalken = new JProgressBar();
+
+				meinLadebalken.setStringPainted(true);
+
+				meinPanel.add(meinLadebalken);
+
+				meinJFrame.add(meinPanel);
+				meinJFrame.setVisible(true);
 				// Load selected record from JComboBox to JTextField.
 				// Don't cast to record. Need to iterate on listofrec to get
 				// selected record
@@ -115,7 +129,17 @@ public class MockGUI extends JFrame implements ActionListener {
 					listtoTb.add(tmp.getListOfSTerm().get(i).getName());
 
 				}
-				PrintTable.print(listtoTb);
+
+				Excel e = new Excel();
+				try {
+					System.out.println(of.PickMe());
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				Thread t = new Thread(new PrintTable(listtoTb, e.ExceltoJava(of), meinLadebalken));
+				t.start();
+
 			}
 		});
 
@@ -131,7 +155,7 @@ public class MockGUI extends JFrame implements ActionListener {
 			public void actionPerformed(ActionEvent ev) {
 
 				LineChart_AWT chart = new LineChart_AWT("Corelation", "correlation between searchterms and product",
-						fieldList[0].getText(),of);
+						fieldList[0].getText(), of);
 
 				chart.pack();
 				RefineryUtilities.centerFrameOnScreen(chart);
@@ -142,19 +166,18 @@ public class MockGUI extends JFrame implements ActionListener {
 
 		downloadb.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
-		
+
 				Excel e = new Excel();
-			
+
 				GPRecordManager rm = new GPRecordManager();
-				e.saveToExcel(GPGTrends.parsDataFromJavaIntoRecord(rm.getRecord(fieldList[0].getText())), e.ExceltoJava(of));
-			
+				e.saveToExcel(GPGTrends.parsDataFromJavaIntoRecord(rm.getRecord(fieldList[0].getText())),
+						e.ExceltoJava(of));
+
 			}
 		});
 
 		fileChooseb.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
-
-				
 
 				try {
 					of.setFile();
@@ -175,6 +198,7 @@ public class MockGUI extends JFrame implements ActionListener {
 		this.add(downloadb);
 		this.add(resultb);
 		this.add(cm);
+
 		this.pack();
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
