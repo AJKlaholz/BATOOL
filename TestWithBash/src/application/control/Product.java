@@ -1,15 +1,13 @@
 package application.control;
-import java.util.ArrayList;
+import java.awt.Color;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.TreeMap;
 
 public class Product {
 	
 	private String name;
 	private TreeMap<Calendar,Double> orderDRequest;
-	
+	private Color color;
 	
 	
 
@@ -24,6 +22,12 @@ public class Product {
 	}
 	public void setOrderDRequest(TreeMap<Calendar,Double> orderRequest) {
 		this.orderDRequest = orderRequest;
+	}
+	public Color getColor() {
+		return color;
+	}
+	public void setColor(Color color) {
+		this.color = color;
 	}
 	
 	

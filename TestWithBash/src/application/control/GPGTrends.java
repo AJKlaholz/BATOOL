@@ -1,28 +1,26 @@
 package application.control;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
-
-import application.boundary.Command;
 
 public class GPGTrends {
 
 	public static Record parsDataFromJavaIntoRecord(Record re) {
-		int count = 0;
+		
+		Record tmp=new Record(re);
+		
+		for( int i = 0; i < re.getListOfSTerm().size(); i++){
+			System.out.print(tmp.getListOfSTerm().get(i).getName()+" ");
+	
+			
+		}
+		System.out.println();
+		Scanner sc = null;
 		try {
 			Collections.sort(re.getListOfSTerm(), new Comparator<Searchterm>() {
 				@Override
@@ -30,12 +28,17 @@ public class GPGTrends {
 					return s1.getName().compareToIgnoreCase(s2.getName());
 				}
 			});
-			Scanner sc = new Scanner(new File("C:\\Users\\Adrian\\Documents\\pytrends-master1.2\\examples\\table.txt"));
+			sc = new Scanner(new File("C:\\Users\\Adrian\\Documents\\pytrends-master1.2\\examples\\table.txt"));
 			sc.nextLine();
 			sc.nextLine();
+			for( int i = 0; i < re.getListOfSTerm().size(); i++){
+				System.out.print(tmp.getListOfSTerm().get(i).getName()+" ");
+		
+				
+			}
+			System.out.println();
 			while (sc.hasNext()) {
 
-				count++;
 
 				String sdate = sc.next();
 				String year = "";
@@ -67,12 +70,50 @@ public class GPGTrends {
 
 			}
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
-
-		return re;
+		sc.close();
+		
+		for( int i = 0; i < re.getListOfSTerm().size(); i++){
+			System.out.print(tmp.getListOfSTerm().get(i).getName()+" ");
+	
+			
+		}
+		System.out.println();
+		
+		
+		
+		for( int i = 0; i < re.getListOfSTerm().size(); i++){
+			for( int l = 0; l < re.getListOfSTerm().size(); l++){
+	//			System.out.println(tmp.getListOfSTerm().get(i).getName() +" == "+ re.getListOfSTerm().get(l).getName());
+			if(tmp.getListOfSTerm().get(i).getName().equals(re.getListOfSTerm().get(l).getName())){
+				
+				tmp.getListOfSTerm().get(i).setDateListFromSearchterm(re.getListOfSTerm().get(l).getDateListFromSearchterm());
+	//			System.out.println("GEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+			}
+			}
+	}
+		
+		for( int i = 0; i < re.getListOfSTerm().size(); i++){
+			System.out.print(tmp.getListOfSTerm().get(i).getName()+" ");
+	
+			
+		}
+		System.out.println();
+		for( int i = 0; i < re.getListOfSTerm().size(); i++){
+	
+			System.out.print(re.getListOfSTerm().get(i).getName()+" ");
+			
+		}
+		
+//		System.out.println("EEEEND");
+//	System.out.print(re.getListOfSTerm().toString());
+//		System.out.println();
+//		System.out.print(tmp.getListOfSTerm().toString());
+		return tmp;
 
 	}
+	
 
 }

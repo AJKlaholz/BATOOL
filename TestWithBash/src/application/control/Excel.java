@@ -1,26 +1,20 @@
 package application.control;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -101,20 +95,21 @@ public class Excel {
 			}
 
 		}
-		System.out.println(blatt.getRow(3).getCell(0));
 		try {
 			FileOutputStream output = new FileOutputStream("ExcelTest2.xlsx");
 			datei.write(output);
 			output.close();
+			datei.close();
 		} catch (Exception e) {
 
 		}
-		System.out.println(blatt.getRow(3).getCell(0));
+		
 	}// saveExcel
 
 	public static Product ExceltoJava(OpenFile of) {
 		Product tmp = new Product();
 		TreeMap<Calendar, Double> orderDrequested = new TreeMap<Calendar, Double>();
+		
 
 		try {
 
@@ -128,6 +123,8 @@ public class Excel {
 			// Create Workbook instance holding reference to .xlsx file
 			XSSFWorkbook workbook = new XSSFWorkbook(file);
 
+			
+			FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
 			// Get first/desired sheet from the workbook
 			XSSFSheet sheet = workbook.getSheetAt(1);
 
@@ -136,7 +133,7 @@ public class Excel {
 			for (int i = 0; i < 5; i++) {
 				rowIterator.next();
 			}
-
+			
 			for (int i = 0; i < 3; i++) {
 
 				Row row = rowIterator.next();
@@ -156,9 +153,27 @@ public class Excel {
 				calendar.setTime(sdate);
 				cellIterator.next();
 				Cell cell3 = cellIterator.next();
-				orderDrequested.put(calendar, cell3.getNumericCellValue());
+			
+				
+				
+				Cell cell4 = row.createCell(cell3.getColumnIndex()+1);
+				
+				cell4.setCellFormula(("("+cell3.getNumericCellValue()+"-MIN(F:F))*(1/(MAX(F:F)-MIN(F:F)))*100"));
+				evaluator.notifySetFormula(cell4);
+				CellValue cellValue = evaluator.evaluate(cell4);
+				
+				
+			
+				
+				System.out.println(cellValue.getNumberValue());
+				orderDrequested.put(calendar, cellValue.getNumberValue());
+		
 
-				System.out.println();
+				
+				
+			
+				
+				
 			}
 			tmp.setOrderDRequest(orderDrequested);
 			file.close();

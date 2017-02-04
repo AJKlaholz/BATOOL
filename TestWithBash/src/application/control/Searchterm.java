@@ -1,15 +1,13 @@
 package application.control;
 
+import java.awt.Color;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 public class Searchterm {
 	private String name;
 	private TreeMap<Calendar, Double> DateListFromSearchterm = new TreeMap<Calendar, Double>();
+	private Color color;
 	
 	public String getName() {
 		return name;
@@ -22,9 +20,21 @@ public class Searchterm {
 		this.DateListFromSearchterm.put(calendar, pop);
 	}
 	
+	public void setDateListFromSearchterm(TreeMap<Calendar, Double> DateListFromSearchterms){
+		this.DateListFromSearchterm=DateListFromSearchterms;
+	}
+	
 	
 	public TreeMap<Calendar, Double> getDateListFromSearchterm(){
 		return this.DateListFromSearchterm;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
 	}
 
 }

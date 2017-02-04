@@ -3,16 +3,14 @@ package application.boundary;
 import org.jfree.chart.ChartPanel;
 
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.ui.ApplicationFrame;
-import org.joda.time.Instant;
-import org.joda.time.LocalDate;
-
 import application.control.Excel;
 import application.control.GPGTrends;
 import application.control.GPRecordManager;
@@ -48,7 +46,7 @@ EXPORT TO EXEL: www.jfree.org/forum/viewtopic.php?f=3&t=4607
 public class LineChart_AWT extends ApplicationFrame {
 	GPRecordManager rm = new GPRecordManager();
 
-	public LineChart_AWT(String applicationTitle, String chartTitle, String r,OpenFile of) {
+	public LineChart_AWT(String applicationTitle, String chartTitle, String r, OpenFile of, JColorComboBox[] box) {
 		super(applicationTitle);
 		JFreeChart lineChart = ChartFactory.createTimeSeriesChart(chartTitle, "time interval", "popularity",
 				createDataset(GPGTrends.parsDataFromJavaIntoRecord(rm.getRecord(r)), of), true, true, false);
@@ -56,6 +54,18 @@ public class LineChart_AWT extends ApplicationFrame {
 		ChartPanel chartPanel = new ChartPanel(lineChart);
 		chartPanel.setPreferredSize(new java.awt.Dimension(1500, 1000));
 		chartPanel.setMouseZoomable(true, false);
+
+		final XYPlot plot = lineChart.getXYPlot();
+		XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer(true, false);
+		for (int i = 0; i < rm.getRecord(r).getListOfSTerm().size(); i++) {
+			renderer.setSeriesPaint(i, box[i].getSelectedColor());
+		}
+		renderer.setSeriesPaint(rm.getRecord(r).getListOfSTerm().size(), box[box.length-1].getSelectedColor());
+		//renderer.setSeriesPaint(rm.getRecord(r).getListOfSTerm().size(),box[rm.getRecord(r).getListOfSTerm().size()].getSelectedColor());
+		
+		
+		System.out.println(box.length);
+		plot.setRenderer(renderer);
 		setContentPane(chartPanel);
 
 	}
@@ -74,13 +84,14 @@ public class LineChart_AWT extends ApplicationFrame {
 			dataset.addSeries(xys);
 
 		}
-		//TimeSeries pro = new TimeSeries(Excel.ExceltoJava().getName());
+		// TimeSeries pro = new TimeSeries(Excel.ExceltoJava().getName());
 		TimeSeries pro = new TimeSeries(Excel.ExceltoJava(of).getName());
 		for (Entry<Calendar, Double> entry : Excel.ExceltoJava(of).getOrderDRequest().entrySet()) {
 			pro.addOrUpdate((new Day(entry.getKey().get(Calendar.DAY_OF_MONTH),
 					(entry.getKey().get(Calendar.MONTH)) + 1, entry.getKey().get(Calendar.YEAR))), entry.getValue());
 		}
 		dataset.addSeries(pro);
+		
 		return dataset;
 	}
 

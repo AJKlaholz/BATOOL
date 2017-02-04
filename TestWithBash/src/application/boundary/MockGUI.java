@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -14,6 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.jfree.ui.RefineryUtilities;
 
@@ -21,11 +22,11 @@ import application.control.Excel;
 import application.control.GPGTrends;
 import application.control.GPRecordManager;
 import application.control.PrintTable;
+import application.control.Product;
 import application.control.Record;
 import application.control.Searchterm;
 
 public class MockGUI extends JFrame implements ActionListener {
-	Connection dbConnection = null;
 
 	private JButton saveb = new JButton();
 	private JButton loadb = new JButton();
@@ -34,9 +35,13 @@ public class MockGUI extends JFrame implements ActionListener {
 	private JButton resultb = new JButton();
 	private JButton fileChooseb = new JButton();
 	private JComboBox<String> cm = new JComboBox<String>();
+	private JPanel panel = new JPanel();
+	private JColorComboBox[] box = new JColorComboBox[7];
+	GPRecordManager rm = new GPRecordManager();
+	final OpenFile of = new OpenFile();
 
 	static JTextField[] fieldList = new JTextField[6];
-	JLabel[] jl = new JLabel[6];
+	JLabel[] jl = new JLabel[7];
 
 	public MockGUI() {
 		this.setTitle("Mockup GUI");
@@ -59,10 +64,20 @@ public class MockGUI extends JFrame implements ActionListener {
 		resultb.setBounds(620, 300, 100, 30);
 		cm.setBounds(260, 300, 100, 30);
 		fileChooseb.setBounds(380, 100, 150, 30);
+		
+	
 
+		//JPanel panel = new JPanel();
+		
+	
+		//panel.add(box);
+		//panel.setLayout(null);
+		
+		//panel.setSize(250, 100);
+
+		
 		// adds ALL items from database record to jcombobox
-		GPRecordManager rm = new GPRecordManager();
-		final OpenFile of = new OpenFile();
+	
 
 		for (int i = 0; i < rm.getAllRecordnames().size(); i++) {
 			cm.addItem(rm.getAllRecordnames().get(i));
@@ -132,14 +147,14 @@ public class MockGUI extends JFrame implements ActionListener {
 
 				Excel e = new Excel();
 				try {
-					System.out.println(of.PickMe());
+					
+					
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				Thread t = new Thread(new PrintTable(listtoTb, e.ExceltoJava(of), meinLadebalken));
 				t.start();
-
 			}
 		});
 
@@ -153,9 +168,9 @@ public class MockGUI extends JFrame implements ActionListener {
 
 		resultb.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
-
+		
 				LineChart_AWT chart = new LineChart_AWT("Corelation", "correlation between searchterms and product",
-						fieldList[0].getText(), of);
+						fieldList[0].getText(), of, box);
 
 				chart.pack();
 				RefineryUtilities.centerFrameOnScreen(chart);
@@ -178,18 +193,29 @@ public class MockGUI extends JFrame implements ActionListener {
 
 		fileChooseb.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
-
+				Excel ec = new Excel();
 				try {
 					of.setFile();
+					jl[jl.length-1].setText("Product:               "+ ec.ExceltoJava(of).getName());
+					jl[jl.length-1].paintImmediately(jl[jl.length-1].getVisibleRect());
+					System.out.println(jl[jl.length-1].getText());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				
 			}
+			
 		});
 
 		this.setLayout(null);
 
-		addingTextfieldsandLabels(this, fieldList, jl);
+		addingTextfieldsandLabels(this, fieldList, jl, box);
+		
+		
+		//this.getContentPane().add(panel);
+		
+		
+		
 
 		this.add(fileChooseb);
 		this.add(saveb);
@@ -198,7 +224,7 @@ public class MockGUI extends JFrame implements ActionListener {
 		this.add(downloadb);
 		this.add(resultb);
 		this.add(cm);
-
+		
 		this.pack();
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
@@ -217,7 +243,18 @@ public class MockGUI extends JFrame implements ActionListener {
 	}
 
 	// adding an array of JTextFields to a JFrame
-	public void addingTextfieldsandLabels(JFrame jf, JTextField[] fieldList, JLabel[] jl) {
+	public void addingTextfieldsandLabels(JFrame jf, JTextField[] fieldList, JLabel[] jl, JColorComboBox[] jcc) {
+		
+		GPRecordManager rm = new GPRecordManager();
+		Excel e = new Excel();
+		
+		Object selcObj = cm.getSelectedItem();
+		String ObjtoString = selcObj.toString();
+
+
+		Record tmp = rm.getRecord(ObjtoString);
+		
+		
 		int y = 10;
 
 		for (int i = 0; i < fieldList.length; i++) {
@@ -225,6 +262,12 @@ public class MockGUI extends JFrame implements ActionListener {
 				jl[i] = new JLabel("Record:");
 			} else {
 				jl[i] = new JLabel("Searchterm:");
+				jcc[i-1] = new JColorComboBox();
+				jf.add(jcc[i-1]);
+				jcc[i-1].setBounds(250,y,100,20);
+				
+			
+				
 			}
 
 			fieldList[i] = new JTextField(30);
@@ -232,10 +275,25 @@ public class MockGUI extends JFrame implements ActionListener {
 			jf.add(jl[i]);
 			fieldList[i].setBounds(100, y, 150, 20);
 			jl[i].setBounds(10, y, 100, 20);
+			
+			
 
 			y = y + 30;
 
 		}
+		jl[jl.length-1] = new JLabel("Product: ");
+		jcc[jcc.length-1] = new JColorComboBox();
+		jf.add(jcc[jcc.length-1]);
+		jf.add(jl[jl.length-1]);
+		jl[jl.length-1].setBounds(10,y,500,20);
+		jcc[jcc.length-1].setBounds(250,y,100,20);
+	
+	
+//		for(int l=0;l< tmp.getListOfSTerm().size();l++){
+//			tmp.getListOfSTerm().get(l).setColor(jcc[l].getSelectedColor());
+//		}
+		//Excel.ExceltoJava(of).setColor(jcc[tmp.getListOfSTerm().size()-1].getBackground());
+		
 	}
 
 }

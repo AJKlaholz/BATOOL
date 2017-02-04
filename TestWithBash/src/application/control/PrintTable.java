@@ -1,25 +1,14 @@
 package application.control;
 
-import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
-
 import javax.swing.JProgressBar;
 
 import org.joda.time.DateTime;
 import org.joda.time.Months;
-import org.joda.time.YearMonth;
-
 import application.boundary.Command;
-import java.security.SecureRandom;
-import java.math.BigInteger;
-import java.util.UUID;
 
 public class PrintTable implements Runnable {
 	private ArrayList<String> searchterms;
