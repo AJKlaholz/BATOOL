@@ -33,7 +33,7 @@ public class PrintTable implements Runnable {
 		}
 		DateTime start = new DateTime(p.getOrderDRequest().firstKey());
 		DateTime end = new DateTime(p.getOrderDRequest().lastKey());
-		int anzahlM = Months.monthsBetween(start, end).getMonths();
+		int anzahlM = Months.monthsBetween(start, end).getMonths()+1;
 		System.out.println("Anzahl Monate: " + anzahlM);
 
 		PrintWriter writer;

@@ -263,6 +263,7 @@ public class MockGUI extends JFrame implements ActionListener {
 			} else {
 				jl[i] = new JLabel("Searchterm:");
 				jcc[i-1] = new JColorComboBox();
+				jcc[i-1].setSelectedIndex(i-1);
 				jf.add(jcc[i-1]);
 				jcc[i-1].setBounds(250,y,100,20);
 				
@@ -283,6 +284,7 @@ public class MockGUI extends JFrame implements ActionListener {
 		}
 		jl[jl.length-1] = new JLabel("Product: ");
 		jcc[jcc.length-1] = new JColorComboBox();
+		jcc[jcc.length-1].setSelectedIndex(jcc.length-1);
 		jf.add(jcc[jcc.length-1]);
 		jf.add(jl[jl.length-1]);
 		jl[jl.length-1].setBounds(10,y,500,20);
