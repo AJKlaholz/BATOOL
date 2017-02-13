@@ -10,11 +10,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -22,14 +18,14 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.WorkbookUtil;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.jfree.data.time.TimeSeries;
 
 import application.boundary.OpenFile;
 
 
 
 
-public class Excel {
+
+public class ExcelJavaMapper {
 	
 	public void saveToExcel(Record record, Product product) {
 		double[] cor = new double[record.getListOfSTerm().size()];
@@ -83,7 +79,7 @@ public class Excel {
 		}
 		Cell zelle4 = reihe2.createCell(record.getListOfSTerm().size() + 1);
 		zelle4.setCellValue("Produkt");
-
+		//Den Namen für das Produkt villeicht hinzufügen ?!
 		Row reihe1 = null;
 
 		System.out.println("MAP GRÖßE" + record.getListOfSTerm().get(0).getDateListFromSearchterm().entrySet().size());
@@ -188,25 +184,58 @@ public class Excel {
 			
 				
 				
-				Cell cell4 = row.createCell(cell3.getColumnIndex()+1);
+//				Cell cell4 = row.createCell(cell3.getColumnIndex()+1);
 				
-				cell4.setCellFormula(("("+cell3.getNumericCellValue()+"-MIN(F:F))*(1/(MAX(F:F)-MIN(F:F)))*100"));
-				evaluator.notifySetFormula(cell4);
-				CellValue cellValue = evaluator.evaluate(cell4);
+//				cell4.setCellFormula(("("+cell3.getNumericCellValue()+"-MIN(F:F))*(1/(MAX(F:F)-MIN(F:F)))*100"));
+//				evaluator.notifySetFormula(cell4);
+//				CellValue cellValue = evaluator.evaluate(cell4);
 				
-				
-			
-				
-				System.out.println(cellValue.getNumberValue());
-				orderDrequested.put(calendar, cellValue.getNumberValue());
-		
 
-				
-				
-			
-				
-				
+				orderDrequested.put(calendar, cell3.getNumericCellValue());				
 			}
+			int counter = 0;
+			Calendar cp = new GregorianCalendar();
+			cp.setTime(orderDrequested.firstKey().getTime());
+			System.out.println(cp);
+			do{
+				System.out.println("1111111111111");
+				
+				Calendar a = cp;
+				Calendar b = orderDrequested.higherKey(cp);
+				a.add(Calendar.DAY_OF_MONTH, 1);
+				while(a.before(b)){
+					Calendar calendar = new GregorianCalendar();
+					calendar.setTime(a.getTime());
+					orderDrequested.put(calendar, 0.0);
+					System.out.println(a.getTime());
+					a.add(Calendar.DAY_OF_MONTH, 1);
+					
+					System.out.println("Größe des TreeMap: "+orderDrequested.size());
+				}
+				System.out.println("3333333333");
+				try{cp.setTime(b.getTime());
+				
+				}catch(NullPointerException e){
+					break;
+				}
+				
+			}while(cp!=orderDrequested.lastKey());
+			
+			
+			System.out.println("Größe des TreeMap: "+orderDrequested.size());
+			/*for (Entry<Calendar, Double> entry : orderDrequested.entrySet()){
+				System.out.println("2222222222222");
+				Calendar cp = entry.getKey();
+				Calendar end = orderDrequested.higherKey(entry.getKey());
+				cp.add(Calendar.DATE, 1);
+				while(cp!=end){
+					System.out.println("333333333333");
+					orderDrequested.put(cp,0.0);
+					cp.add(Calendar.DATE, 1);
+				}
+				
+			}*/
+			
 			tmp.setOrderDRequest(orderDrequested);
 			file.close();
 			workbook.close();

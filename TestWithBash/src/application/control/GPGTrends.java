@@ -106,11 +106,7 @@ public class GPGTrends {
 			System.out.print(re.getListOfSTerm().get(i).getName()+" ");
 			
 		}
-		
-//		System.out.println("EEEEND");
-//	System.out.print(re.getListOfSTerm().toString());
-//		System.out.println();
-//		System.out.print(tmp.getListOfSTerm().toString());
+
 		return tmp;
 
 	}
