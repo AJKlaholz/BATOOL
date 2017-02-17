@@ -1,4 +1,4 @@
-package application.boundary;
+package application.control;
 
 import org.jfree.chart.ChartPanel;
 
@@ -12,23 +12,17 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.ui.ApplicationFrame;
-import application.control.ExcelJavaMapper;
-import application.control.GPGTrends;
-import application.control.GPRecordManager;
-import application.control.Product;
-import application.control.Record;
-
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 
-public class LineChart_AWT extends ApplicationFrame {
+public class GPshowResultInChart extends ApplicationFrame {
 	GPRecordManager rm = new GPRecordManager();
 
-	public LineChart_AWT(String applicationTitle, String chartTitle, String r, OpenFile of, JColorComboBox[] box) {
+	public GPshowResultInChart(String applicationTitle, String chartTitle, String r, GPFileManager of, GPColorComboBox[] box) {
 		super(applicationTitle);
 		JFreeChart lineChart = ChartFactory.createTimeSeriesChart(chartTitle, "time", "popularity and order request",
-				createDataset(GPGTrends.parsDataFromJavaIntoRecord(rm.getRecord(r)), ExcelJavaMapper.ExceltoJava(of)),
+				createDataset(GPGTrends.createRecordFromTable(rm.getRecord(r)), GPExcelJavaMapper.ExceltoJava(of)),
 				true, true, false);
 
 		ChartPanel chartPanel = new ChartPanel(lineChart);
@@ -46,7 +40,7 @@ public class LineChart_AWT extends ApplicationFrame {
 
 	}
 
-	public TimeSeriesCollection createDataset(Record recordInput, Product productInput) {
+	public TimeSeriesCollection createDataset(GPRecord recordInput, GPProduct productInput) {
 		TimeSeriesCollection dataset = new TimeSeriesCollection();
 		for (int i = 0; i < recordInput.getListOfSTerm().size(); i++) {
 			TimeSeries xys = new TimeSeries(recordInput.getListOfSTerm().get(i).getName());
@@ -71,7 +65,7 @@ public class LineChart_AWT extends ApplicationFrame {
 			}
 
 			xys.setKey(recordInput.getListOfSTerm().get(i).getName() + "("
-					+ roundScale2(Correlation(a.toArray(new Double[a.size()]), b.toArray(new Double[a.size()]))) + ")");
+					+ GPCorrelationCalculater.getCorrelation(a.toArray(new Double[a.size()]), b.toArray(new Double[a.size()]), true) + ")");
 			dataset.addSeries(xys);
 
 		}
@@ -85,38 +79,7 @@ public class LineChart_AWT extends ApplicationFrame {
 		return dataset;
 	}
 
-	public static double Correlation(Double[] doubles, Double[] doubles2) {
-		// TODO: check here that arrays are not null, of the same length etc
-
-		double sx = 0.0;
-		double sy = 0.0;
-		double sxx = 0.0;
-		double syy = 0.0;
-		double sxy = 0.0;
-
-		int n = doubles.length;
-
-		for (int i = 0; i < n; ++i) {
-			double x = doubles[i];
-			double y = doubles2[i];
-
-			sx += x;
-			sy += y;
-			sxx += x * x;
-			syy += y * y;
-			sxy += x * y;
-		}
-
-		// covariation
-		double cov = sxy / n - sx * sy / n / n;
-		// standard error of x
-		double sigmax = Math.sqrt(sxx / n - sx * sx / n / n);
-		// standard error of y
-		double sigmay = Math.sqrt(syy / n - sy * sy / n / n);
-
-		// correlation is just a normalized covariation
-		return cov / sigmax / sigmay;
-	}
+	
 
 	static double roundScale2(double d) {
 		return Math.rint(d * 1000) / 1000.;

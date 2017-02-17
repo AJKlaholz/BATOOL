@@ -10,30 +10,25 @@ import java.util.ArrayList;
 
 public class RecordToDB {
 	private Connection dbConnection;
-	public ArrayList<String> pullRecordFromDb(String s){
-		
-		
-		
+
+	public ArrayList<String> pullRecordFromDb(String s) {
+
 		ArrayList<String> tmp = new ArrayList<String>();
 		try {
 			dbConnection = DriverManager.getConnection("jdbc:sqlite:sample.de");
 			Statement preparedStatement = dbConnection.createStatement();
-			
-		
-			
-			ResultSet selectAllRecords = preparedStatement.executeQuery("SELECT * FROM record WHERE Recordname='"+s+"'");
-			
-			
-			if(selectAllRecords.next()){
+
+			ResultSet selectAllRecords = preparedStatement
+					.executeQuery("SELECT * FROM record WHERE Recordname='" + s + "'");
+
+			if (selectAllRecords.next()) {
 				tmp.add(selectAllRecords.getString("Recordname"));
-				for(int i=1;i<=5;i++){
-				tmp.add(selectAllRecords.getString("Searchterm"+i));
-				System.out.println(selectAllRecords.getString("Searchterm"+i));
+				for (int i = 1; i <= 5; i++) {
+					tmp.add(selectAllRecords.getString("Searchterm" + i));
+					System.out.println(selectAllRecords.getString("Searchterm" + i));
 				}
-				
+
 			}
-		
-		
 
 		} catch (SQLException e) {
 
@@ -41,28 +36,23 @@ public class RecordToDB {
 
 		} finally {
 
-		
-			}
+		}
 
-			if (dbConnection != null) {
-				try {
-					dbConnection.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		if (dbConnection != null) {
+			try {
+				dbConnection.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		
-		
-		
+		}
+
 		return tmp;
-		
+
 	}
-	
-	
+
 	public void pushRecordToDb(ArrayList<String> rsql) {
 
-		
 		PreparedStatement preparedStatement = null;
 
 		String insertTableSQL = "INSERT INTO record"
@@ -73,9 +63,9 @@ public class RecordToDB {
 			dbConnection = DriverManager.getConnection("jdbc:sqlite:sample.de");
 			preparedStatement = dbConnection.prepareStatement(insertTableSQL);
 
-			for (int i=1;i<=rsql.size();i++){
-			preparedStatement.setString(i, rsql.get(i-1));
-			System.out.println(rsql.get(i-1));
+			for (int i = 1; i <= rsql.size(); i++) {
+				preparedStatement.setString(i, rsql.get(i - 1));
+				System.out.println(rsql.get(i - 1));
 			}
 			// execute insert SQL stetement
 			preparedStatement.executeUpdate();
@@ -109,19 +99,17 @@ public class RecordToDB {
 		}
 	}
 
-	public void deleteRecordFromDb(String s){
-		//DELETE  RECORD  FROM DATABASE
-		
-		
+	public void deleteRecordFromDb(String s) {
+		// DELETE RECORD FROM DATABASE
+
 		Statement preparedStatement = null;
 
-		String deleteFromTableSQL = "DELETE FROM record WHERE Recordname='"+ s +"'" ;
+		String deleteFromTableSQL = "DELETE FROM record WHERE Recordname='" + s + "'";
 
 		try {
 			dbConnection = DriverManager.getConnection("jdbc:sqlite:sample.de");
 			preparedStatement = dbConnection.createStatement();
 
-			
 			// execute insert SQL stetement
 			preparedStatement.execute(deleteFromTableSQL);
 
@@ -152,24 +140,21 @@ public class RecordToDB {
 			}
 
 		}
-		
-		//DELETE END
+
 	}
 
+	public ArrayList<String> pullAllRecordnamesFromDb() {
+		ArrayList<String> ard = new ArrayList<String>();
 
-	public ArrayList<String> pullAllRecordnamesFromDb(){
-		ArrayList<String> ard = new ArrayList<String> ();
-		
 		try {
 			dbConnection = DriverManager.getConnection("jdbc:sqlite:sample.de");
 			Statement preparedStatement = dbConnection.createStatement();
 			ResultSet selectAllRecords = preparedStatement.executeQuery("SELECT Recordname From record");
-			while(selectAllRecords.next()){
-				
+			while (selectAllRecords.next()) {
+
 				ard.add((selectAllRecords.getString("Recordname")));
-			
+
 			}
-		
 
 		} catch (SQLException e) {
 
@@ -177,19 +162,17 @@ public class RecordToDB {
 
 		} finally {
 
-		
-			}
+		}
 
-			if (dbConnection != null) {
-				try {
-					dbConnection.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		if (dbConnection != null) {
+			try {
+				dbConnection.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		
-		
+		}
+
 		return ard;
 	}
 }

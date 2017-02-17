@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.util.Calendar;
 import java.util.TreeMap;
 
-public class Searchterm {
+public class GPSearchterm {
 	private String name;
 	private TreeMap<Calendar, Double> DateListFromSearchterm = new TreeMap<Calendar, Double>();
 	private Color color;

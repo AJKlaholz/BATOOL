@@ -10,35 +10,32 @@ import java.util.Scanner;
 
 public class GPGTrends {
 
-	public static Record parsDataFromJavaIntoRecord(Record re) {
-		
-		Record tmp=new Record(re);
-		
-		for( int i = 0; i < re.getListOfSTerm().size(); i++){
-			System.out.print(tmp.getListOfSTerm().get(i).getName()+" ");
-	
-			
+	public static GPRecord createRecordFromTable(GPRecord re) {
+
+		GPRecord tmp = new GPRecord(re);
+
+		for (int i = 0; i < re.getListOfSTerm().size(); i++) {
+			System.out.print(tmp.getListOfSTerm().get(i).getName() + " ");
+
 		}
 		System.out.println();
 		Scanner sc = null;
 		try {
-			Collections.sort(re.getListOfSTerm(), new Comparator<Searchterm>() {
+			Collections.sort(re.getListOfSTerm(), new Comparator<GPSearchterm>() {
 				@Override
-				public int compare(Searchterm s1, Searchterm s2) {
+				public int compare(GPSearchterm s1, GPSearchterm s2) {
 					return s1.getName().compareToIgnoreCase(s2.getName());
 				}
 			});
 			sc = new Scanner(new File("C:\\Users\\Adrian\\Documents\\pytrends-master1.2\\examples\\table.txt"));
 			sc.nextLine();
 			sc.nextLine();
-			for( int i = 0; i < re.getListOfSTerm().size(); i++){
-				System.out.print(tmp.getListOfSTerm().get(i).getName()+" ");
-		
-				
+			for (int i = 0; i < re.getListOfSTerm().size(); i++) {
+				System.out.print(tmp.getListOfSTerm().get(i).getName() + " ");
+
 			}
 			System.out.println();
 			while (sc.hasNext()) {
-
 
 				String sdate = sc.next();
 				String year = "";
@@ -70,46 +67,23 @@ public class GPGTrends {
 
 			}
 		} catch (FileNotFoundException e) {
-			
+
 			e.printStackTrace();
 		}
 		sc.close();
-		
-		for( int i = 0; i < re.getListOfSTerm().size(); i++){
-			System.out.print(tmp.getListOfSTerm().get(i).getName()+" ");
-	
-			
-		}
-		System.out.println();
-		
-		
-		
-		for( int i = 0; i < re.getListOfSTerm().size(); i++){
-			for( int l = 0; l < re.getListOfSTerm().size(); l++){
-	//			System.out.println(tmp.getListOfSTerm().get(i).getName() +" == "+ re.getListOfSTerm().get(l).getName());
-			if(tmp.getListOfSTerm().get(i).getName().equals(re.getListOfSTerm().get(l).getName())){
-				
-				tmp.getListOfSTerm().get(i).setDateListFromSearchterm(re.getListOfSTerm().get(l).getDateListFromSearchterm());
-	//			System.out.println("GEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+
+		for (int i = 0; i < re.getListOfSTerm().size(); i++) {
+			for (int l = 0; l < re.getListOfSTerm().size(); l++) {
+				if (tmp.getListOfSTerm().get(i).getName().equals(re.getListOfSTerm().get(l).getName())) {
+
+					tmp.getListOfSTerm().get(i)
+							.setDateListFromSearchterm(re.getListOfSTerm().get(l).getDateListFromSearchterm());
+				}
 			}
-			}
-	}
-		
-		for( int i = 0; i < re.getListOfSTerm().size(); i++){
-			System.out.print(tmp.getListOfSTerm().get(i).getName()+" ");
-	
-			
-		}
-		System.out.println();
-		for( int i = 0; i < re.getListOfSTerm().size(); i++){
-	
-			System.out.print(re.getListOfSTerm().get(i).getName()+" ");
-			
 		}
 
 		return tmp;
 
 	}
-	
 
 }

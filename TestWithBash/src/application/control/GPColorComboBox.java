@@ -1,4 +1,4 @@
-package application.boundary;
+package application.control;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -11,11 +11,11 @@ import javax.swing.*;
  *
  * @author sharath
  */
-public class JColorComboBox extends JComboBox {
+public class GPColorComboBox extends JComboBox {
 
 	static Hashtable<String, Color> colors;
 
-	public JColorComboBox() {
+	public GPColorComboBox() {
 		super();
 		DefaultComboBoxModel model = new DefaultComboBoxModel();
 		Enumeration colorNames = addColors().keys();
@@ -46,7 +46,7 @@ public class JColorComboBox extends JComboBox {
 		return this.getBackground();
 	}
 
-	private Hashtable addColors() {
+	public Hashtable addColors() {
 
 		colors = new <String, Color>Hashtable();
 

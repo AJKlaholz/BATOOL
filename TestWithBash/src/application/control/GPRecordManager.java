@@ -8,7 +8,7 @@ import application.entity.RecordToDB;
 
 public class GPRecordManager {
 	
-		public void setRecord(Record rs){
+		public void setRecord(GPRecord rs){
 			ArrayList<String> tmp = new ArrayList<String>();
 			tmp.add(rs.getName());
 			for(int i=0;i<rs.getListOfSTerm().size();i++){
@@ -19,16 +19,16 @@ public class GPRecordManager {
 			
 		}
 		
-		public Record getRecord(String s){
-			Record lr = new Record();
-			ArrayList<Searchterm> als = new ArrayList<Searchterm>();
+		public GPRecord getRecord(String s){
+			GPRecord lr = new GPRecord();
+			ArrayList<GPSearchterm> als = new ArrayList<GPSearchterm>();
 			RecordToDB rdb = new RecordToDB();
 			ArrayList <String> tmp = new ArrayList <String>(6);
 			tmp = rdb.pullRecordFromDb(s);
 			lr.setName(tmp.get(0));
 			
 			for(int i=1;i<tmp.size();i++){
-				Searchterm st = new Searchterm();
+				GPSearchterm st = new GPSearchterm();
 				st.setName(tmp.get(i));
 				als.add(st);
 			}

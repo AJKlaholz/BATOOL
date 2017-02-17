@@ -1,9 +1,9 @@
-package application.boundary;
+package application.control;
 
 import java.io.File;
 import javax.swing.JFileChooser;
 
-public class OpenFile {
+public class GPFileManager {
 
 	private File file=null;
 	JFileChooser fileChooser = new JFileChooser();
@@ -15,23 +15,12 @@ public class OpenFile {
 			// get the file
 			this.file = fileChooser.getSelectedFile();
 			System.out.println(file.getName());
-			/*
-			 * //create a scanner for the file Scanner input = new
-			 * Scanner(file);
-			 * 
-			 * //read text from file while(input.hasNext()){
-			 * sb.append(input.nextLine()); sb.append("\n"); }
-			 * 
-			 * input.close();
-			 */
-			
 		} else {
 			sb.append("No file was selected");
 		}
 	
 	}
-	public File PickMe() throws Exception {
-		System.out.println(file);
+	public File getFile() throws Exception {
 			return this.file;
 
 	}
