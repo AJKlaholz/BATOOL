@@ -18,15 +18,15 @@ import javax.swing.ProgressMonitor;
 
 import org.jfree.ui.RefineryUtilities;
 
-import application.control.GPExcelJavaMapper;
 import application.control.GPGTrends;
 import application.control.GPParseDataToInterface;
 import application.control.GPRecordManager;
 import application.control.GPRecord;
 import application.control.GPSearchterm;
-import application.control.GPColorComboBox;
-import application.control.GPFileManager;
 import application.control.GPshowResultInChart;
+import application.control.GPColorComboBox;
+import application.control.GPExcelJavaMapper;
+import application.control.GPFileManager;
 
 public class UIGui extends JFrame implements ActionListener {
 
@@ -40,7 +40,7 @@ public class UIGui extends JFrame implements ActionListener {
 	private JPanel panel = new JPanel();
 	private GPColorComboBox[] box = new GPColorComboBox[7];
 	private Process process = null;
-	
+
 	GPRecordManager rm = new GPRecordManager();
 	final GPFileManager of = new GPFileManager();
 
@@ -75,94 +75,38 @@ public class UIGui extends JFrame implements ActionListener {
 
 		uiSaveB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
-				if(!(fieldList[0].getText().equals(""))){
-				// INSERT INTO RECORD DATABASE
-				GPRecordManager rp = new GPRecordManager();
-				GPRecord al = new GPRecord();
-				ArrayList<GPSearchterm> ast = new ArrayList<GPSearchterm>();
-				al.setName(fieldList[0].getText());
-				for (int i = 1; i < fieldList.length; i++) {
-					GPSearchterm st = new GPSearchterm();
-					st.setName(fieldList[i].getText());
-					ast.add(st);
-				}
+				if (!(fieldList[0].getText().equals(""))) {
+					// INSERT INTO RECORD DATABASE
+					GPRecordManager rp = new GPRecordManager();
+					GPRecord al = new GPRecord();
+					ArrayList<GPSearchterm> ast = new ArrayList<GPSearchterm>();
+					al.setName(fieldList[0].getText());
+					for (int i = 1; i < fieldList.length; i++) {
+						GPSearchterm st = new GPSearchterm();
+						st.setName(fieldList[i].getText());
+						ast.add(st);
+					}
 
-				al.setListofsterm(ast);
-				rp.setRecord(al);
+					al.setListofsterm(ast);
+					rp.setRecord(al);
 
-				// add Object to JComboBox
-				cm.addItem(fieldList[0].getText());
+					// add Object to JComboBox
+					cm.addItem(fieldList[0].getText());
 
-				}else{
+				} else {
 					JOptionPane.showMessageDialog(null, "Please enter a record", "Inane error",
 							JOptionPane.ERROR_MESSAGE);
-					}
 				}
-		});
-
-/*		uiLoadB.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ev) {
-				try {
-					if (of.getFile() != null) {
-						JFrame meinJFrame = new JFrame();
-						meinJFrame.setSize(300, 100);
-						meinJFrame.setTitle("Loading Data...");
-						meinJFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-						meinJFrame.setLocationRelativeTo(null);
-						JPanel meinPanel = new JPanel();
-						JProgressBar meinLadebalken = new JProgressBar();
-
-						meinLadebalken.setStringPainted(true);
-
-						meinPanel.add(meinLadebalken);
-
-						meinJFrame.add(meinPanel);
-						meinJFrame.setVisible(true);
-						// Load selected record from JComboBox to JTextField.
-						// Don't cast to record. Need to iterate on listofrec to
-						// get
-						// selected record
-						Object selcObj = cm.getSelectedItem();
-						String ObjtoString = selcObj.toString();
-						GPRecordManager rm = new GPRecordManager();
-
-						GPRecord tmp = rm.getRecord(ObjtoString);
-
-						fieldList[0].setText(tmp.getName());
-
-						for (int i = 1; i < 6; i++) {
-
-							fieldList[i].setText(tmp.getListOfSTerm().get(i - 1).getName());
-
-						}
-
-						ArrayList<String> listtoTb = new ArrayList<String>();
-						for (int i = 0; i < 5; i++) {
-							listtoTb.add(tmp.getListOfSTerm().get(i).getName());
-
-						}
-
-						Thread t = new Thread(new GPParseDataToInterface(listtoTb, GPExcelJavaMapper.ExceltoJava(of),
-								meinLadebalken));
-						t.start();
-					} else {
-						JOptionPane.showMessageDialog(null, "Please select a file", "Inane error",
-								JOptionPane.ERROR_MESSAGE);
-					}
-				} catch (Exception e) {
-
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
 			}
 		});
-*/
-		
+
+
+
 		uiLoadB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
 				try {
 					if (of.getFile() != null) {
+						UIGui.this.setEnabled(false);
 						final JFrame meinJFrame = new JFrame();
 						meinJFrame.setSize(300, 150);
 						meinJFrame.setTitle("Loading Data...");
@@ -204,18 +148,16 @@ public class UIGui extends JFrame implements ActionListener {
 							listtoTb.add(tmp.getListOfSTerm().get(i).getName());
 
 						}
-
-						final Thread t = new Thread(new GPParseDataToInterface(listtoTb,
-								GPExcelJavaMapper.ExceltoJava(of), meinLadebalken));
+						final Thread t = new Thread(new GPParseDataToInterface(listtoTb, GPExcelJavaMapper.ExceltoJava(of), meinLadebalken,UIGui.this));
 						t.start();
 
 						cancel.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent ev) {
 								meinLadebalken.setVisible(false);
-								while (t.isAlive()) {
-								}
-
 								
+								while (t.isAlive()) {
+									
+								}
 								for (int i = 0; i < 6; i++) {
 
 									fieldList[i].setText("");
@@ -224,7 +166,7 @@ public class UIGui extends JFrame implements ActionListener {
 
 							}
 						});
-						
+
 					} else {
 						JOptionPane.showMessageDialog(null, "Please select a file", "Inane error",
 								JOptionPane.ERROR_MESSAGE);
@@ -234,52 +176,51 @@ public class UIGui extends JFrame implements ActionListener {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
+				
 			}
-			});
+		});
 		uiDeleteB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
-				int sel = JOptionPane.showConfirmDialog(
-					    null, "Do you want to delete the record  \""+ (String)cm.getSelectedItem() +"\"?",
-					    "Delete record", JOptionPane.WARNING_MESSAGE,
-					    JOptionPane.YES_NO_OPTION);
-				if(sel==0){
-				GPRecordManager rm = new GPRecordManager();
-				rm.deleteRecord((String) cm.getSelectedItem());
-				cm.removeItemAt(cm.getSelectedIndex());
+				int sel = JOptionPane.showConfirmDialog(null,
+						"Do you want to delete the record  \"" + (String) cm.getSelectedItem() + "\"?", "Delete record",
+						JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_OPTION);
+				if (sel == 0) {
+					GPRecordManager rm = new GPRecordManager();
+					rm.deleteRecord((String) cm.getSelectedItem());
+					cm.removeItemAt(cm.getSelectedIndex());
 				}
 			}
 		});
 
 		uiResultB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
-				if(!fieldList[0].getText().equals("")&&(!of.equals(null))){
-				GPshowResultInChart chart = new GPshowResultInChart("Corelation",
-						"correlation between searchterms and product", fieldList[0].getText(), of, box);
+				if (!fieldList[0].getText().equals("") && (!of.equals(null))) {
+					GPshowResultInChart chart = new GPshowResultInChart("Corelation",
+							"correlation between searchterms and product", fieldList[0].getText(), of, box);
 
-				chart.pack();
-				RefineryUtilities.centerFrameOnScreen(chart);
-				chart.setVisible(true);
+					chart.pack();
+					RefineryUtilities.centerFrameOnScreen(chart);
+					chart.setVisible(true);
 
-				}else{
+				} else {
 					JOptionPane.showMessageDialog(null, "Please select file and record", "Inane error",
 							JOptionPane.ERROR_MESSAGE);
-					}
 				}
+			}
 		});
 
 		uiDownloadB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
-				if(!fieldList[0].getText().equals("")&&(!of.equals(null))){
-				GPExcelJavaMapper e = new GPExcelJavaMapper();
+				if (!fieldList[0].getText().equals("") && (!of.equals(null))) {
+					GPExcelJavaMapper e = new GPExcelJavaMapper();
 
-				GPRecordManager rm = new GPRecordManager();
-				e.saveToExcel(GPGTrends.createRecordFromTable(rm.getRecord(fieldList[0].getText())),
-						GPExcelJavaMapper.ExceltoJava(of));
+					GPRecordManager rm = new GPRecordManager();
+					e.saveToExcel(GPGTrends.createRecordFromTable(rm.getRecord(fieldList[0].getText())),
+							GPExcelJavaMapper.ExceltoJava(of));
 
-			}else{
-				JOptionPane.showMessageDialog(null, "Please select file and record", "Inane error",
-						JOptionPane.ERROR_MESSAGE);
+				} else {
+					JOptionPane.showMessageDialog(null, "Please select file and record", "Inane error",
+							JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -301,7 +242,6 @@ public class UIGui extends JFrame implements ActionListener {
 		this.setLayout(null);
 
 		addingTextfieldsandLabels(this, fieldList, jl, box);
-
 
 		this.add(uiLoadSalesFileB);
 		this.add(uiSaveB);

@@ -4,6 +4,7 @@ import org.jfree.chart.ChartPanel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Map.Entry;
 
 import org.jfree.chart.ChartFactory;
@@ -41,6 +42,7 @@ public class GPshowResultInChart extends ApplicationFrame {
 	}
 
 	public TimeSeriesCollection createDataset(GPRecord recordInput, GPProduct productInput) {
+		
 		TimeSeriesCollection dataset = new TimeSeriesCollection();
 		for (int i = 0; i < recordInput.getListOfSTerm().size(); i++) {
 			TimeSeries xys = new TimeSeries(recordInput.getListOfSTerm().get(i).getName());
@@ -69,20 +71,18 @@ public class GPshowResultInChart extends ApplicationFrame {
 			dataset.addSeries(xys);
 
 		}
+		double maxProductValue=(Collections.max(productInput.getOrderDRequest().values()));
+		double minProductValue=(Collections.min(productInput.getOrderDRequest().values()));
+		
+		// cell4.setCellFormula(("("+cell3.getNumericCellValue()+"-MIN(F:F))*(1/(MAX(F:F)-MIN(F:F)))*100"));
 		TimeSeries pro = new TimeSeries(productInput.getName());
 		for (Entry<Calendar, Double> entry : productInput.getOrderDRequest().entrySet()) {
 			pro.addOrUpdate((new Day(entry.getKey().get(Calendar.DAY_OF_MONTH),
-					(entry.getKey().get(Calendar.MONTH)) + 1, entry.getKey().get(Calendar.YEAR))), entry.getValue());
+					(entry.getKey().get(Calendar.MONTH)) + 1, entry.getKey().get(Calendar.YEAR))), (entry.getValue()-minProductValue)*(1/(maxProductValue-minProductValue))*100);
 		}
 		dataset.addSeries(pro);
 
 		return dataset;
-	}
-
-	
-
-	static double roundScale2(double d) {
-		return Math.rint(d * 1000) / 1000.;
 	}
 
 }

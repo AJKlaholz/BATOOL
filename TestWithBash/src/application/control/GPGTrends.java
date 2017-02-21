@@ -11,14 +11,17 @@ import java.util.Scanner;
 public class GPGTrends {
 
 	public static GPRecord createRecordFromTable(GPRecord re) {
-
+		for(int i=0;i<re.getListOfSTerm().size();i++){
+			if(re.getListOfSTerm().get(i).getName().equals("")){
+				re.getListOfSTerm().remove(i);
+			}
+		}
+		
+		
 		GPRecord tmp = new GPRecord(re);
 
-		for (int i = 0; i < re.getListOfSTerm().size(); i++) {
-			System.out.print(tmp.getListOfSTerm().get(i).getName() + " ");
 
-		}
-		System.out.println();
+
 		Scanner sc = null;
 		try {
 			Collections.sort(re.getListOfSTerm(), new Comparator<GPSearchterm>() {
@@ -30,11 +33,7 @@ public class GPGTrends {
 			sc = new Scanner(new File("C:\\Users\\Adrian\\Documents\\pytrends-master1.2\\examples\\table.txt"));
 			sc.nextLine();
 			sc.nextLine();
-			for (int i = 0; i < re.getListOfSTerm().size(); i++) {
-				System.out.print(tmp.getListOfSTerm().get(i).getName() + " ");
 
-			}
-			System.out.println();
 			while (sc.hasNext()) {
 
 				String sdate = sc.next();

@@ -143,6 +143,7 @@ public class GPExcelJavaMapper {
 
 	public static GPProduct ExceltoJava(GPFileManager of) {
 		GPProduct tmp = new GPProduct();
+		int countRow=0;
 		TreeMap<Calendar, Double> orderDrequested = new TreeMap<Calendar, Double>();
 
 		try {
@@ -164,7 +165,7 @@ public class GPExcelJavaMapper {
 				rowIterator.next();
 			}
 
-			for (int i = 0; i < 3; i++) {
+			while(true) {
 
 				Row row = rowIterator.next();
 
@@ -172,7 +173,7 @@ public class GPExcelJavaMapper {
 				Iterator<Cell> cellIterator = row.cellIterator();
 				cellIterator.next();
 				Cell cell = cellIterator.next();
-
+				if(countRow==0||workbook.getSheetAt(1).getRow(row.getRowNum()-1).getCell(cell.getColumnIndex()).getStringCellValue().equals(cell.getStringCellValue())){
 				tmp.setName(cell.getStringCellValue());
 				cellIterator.next();
 				Cell cell2 = cellIterator.next();
@@ -189,9 +190,18 @@ public class GPExcelJavaMapper {
 				// cell4.setCellFormula(("("+cell3.getNumericCellValue()+"-MIN(F:F))*(1/(MAX(F:F)-MIN(F:F)))*100"));
 				// evaluator.notifySetFormula(cell4);
 				// CellValue cellValue = evaluator.evaluate(cell4);
-
-				orderDrequested.put(calendar, cell3.getNumericCellValue());
+				if( cell3.getNumericCellValue()<0){
+					orderDrequested.put(calendar, 0.0);
+				}else{
+					orderDrequested.put(calendar, cell3.getNumericCellValue());	
+				}
+				}else{
+					break;
+				}
+				countRow++;
 			}
+			
+			//fill Objects witn 0.0 Value
 			Calendar cp = new GregorianCalendar();
 			cp.setTime(orderDrequested.firstKey().getTime());
 			do {
