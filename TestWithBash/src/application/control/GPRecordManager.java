@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import application.entity.RecordToDB;
 
 
-
+//Schnittstelle zwischen Geschäftslogik und Persistenzschicht. 
 public class GPRecordManager {
-	
 		public void setRecord(GPRecord rs){
 			ArrayList<String> tmp = new ArrayList<String>();
 			tmp.add(rs.getName());
@@ -18,15 +17,17 @@ public class GPRecordManager {
 			rdb.pushRecordToDb(tmp);
 			
 		}
-		
 		public GPRecord getRecord(String s){
 			GPRecord lr = new GPRecord();
 			ArrayList<GPSearchterm> als = new ArrayList<GPSearchterm>();
 			RecordToDB rdb = new RecordToDB();
 			ArrayList <String> tmp = new ArrayList <String>(6);
 			tmp = rdb.pullRecordFromDb(s);
+			if(tmp.size()!=0){
 			lr.setName(tmp.get(0));
-			
+			}else{
+				lr.setName("");
+			}
 			for(int i=1;i<tmp.size();i++){
 				GPSearchterm st = new GPSearchterm();
 				st.setName(tmp.get(i));

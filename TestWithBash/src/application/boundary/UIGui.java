@@ -14,8 +14,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
-import javax.swing.ProgressMonitor;
-
 import org.jfree.ui.RefineryUtilities;
 
 import application.control.GPGTrends;
@@ -23,13 +21,12 @@ import application.control.GPParseDataToInterface;
 import application.control.GPRecordManager;
 import application.control.GPRecord;
 import application.control.GPSearchterm;
-import application.control.GPshowResultInChart;
-import application.control.GPColorComboBox;
-import application.control.GPExcelJavaMapper;
+import application.entity.SQLliteDB;
 import application.control.GPFileManager;
 
 public class UIGui extends JFrame implements ActionListener {
 
+	private static final long serialVersionUID = 714049921368627674L;
 	private JButton uiSaveB = new JButton();
 	private JButton uiLoadB = new JButton();
 	private JButton uiDeleteB = new JButton();
@@ -37,10 +34,7 @@ public class UIGui extends JFrame implements ActionListener {
 	private JButton uiResultB = new JButton();
 	private JButton uiLoadSalesFileB = new JButton();
 	private JComboBox<String> cm = new JComboBox<String>();
-	private JPanel panel = new JPanel();
-	private GPColorComboBox[] box = new GPColorComboBox[7];
-	private Process process = null;
-
+	private UIColorComboBox[] box = new UIColorComboBox[7];
 	GPRecordManager rm = new GPRecordManager();
 	final GPFileManager of = new GPFileManager();
 
@@ -52,7 +46,8 @@ public class UIGui extends JFrame implements ActionListener {
 
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setPreferredSize(new Dimension(520, 350));
-		this.setLayout(new FlowLayout());
+		this.setResizable(false);
+		this.setLayout(null);
 
 		uiSaveB.setText("Save");
 		uiLoadB.setText("Load");
@@ -76,19 +71,19 @@ public class UIGui extends JFrame implements ActionListener {
 		uiSaveB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
 				if (!(fieldList[0].getText().equals(""))) {
-					// INSERT INTO RECORD DATABASE
+					// INSERT RECORD INTO DATABASE
 					GPRecordManager rp = new GPRecordManager();
-					GPRecord al = new GPRecord();
+					GPRecord re = new GPRecord();
 					ArrayList<GPSearchterm> ast = new ArrayList<GPSearchterm>();
-					al.setName(fieldList[0].getText());
+					re.setName(fieldList[0].getText());
 					for (int i = 1; i < fieldList.length; i++) {
 						GPSearchterm st = new GPSearchterm();
 						st.setName(fieldList[i].getText());
 						ast.add(st);
 					}
 
-					al.setListofsterm(ast);
-					rp.setRecord(al);
+					re.setListofsterm(ast);
+					rp.setRecord(re);
 
 					// add Object to JComboBox
 					cm.addItem(fieldList[0].getText());
@@ -100,63 +95,71 @@ public class UIGui extends JFrame implements ActionListener {
 			}
 		});
 
-
-
 		uiLoadB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
 				try {
 					if (of.getFile() != null) {
+
 						UIGui.this.setEnabled(false);
-						final JFrame meinJFrame = new JFrame();
-						meinJFrame.setSize(300, 150);
-						meinJFrame.setTitle("Loading Data...");
-						meinJFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-						meinJFrame.setLocationRelativeTo(null);
-						JPanel meinPanel = new JPanel();
-						final JProgressBar meinLadebalken = new JProgressBar();
+
+						JPanel loadBarPanel = new JPanel();
+
+						final JProgressBar loadBar = new JProgressBar();
+						loadBar.setStringPainted(true);
+
 						JButton cancel = new JButton();
 						cancel.setText("Cancel Process");
-						cancel.setBounds(100, 50, 100, 30);
-						meinJFrame.add(cancel);
-						meinLadebalken.setStringPainted(true);
+						cancel.setBounds(100, 75, 100, 30);
 
-						meinPanel.add(meinLadebalken);
+						JLabel infotext = new JLabel(
+								"<html>This process can take an extended<br>period of time to complete.</html>");
+						infotext.setBounds(100, 25, 100, 100);
 
-						meinJFrame.add(meinPanel);
-						meinJFrame.setVisible(true);
+						final JFrame loadBarFrame = new JFrame();
+						loadBarFrame.setSize(300, 150);
+						loadBarFrame.setTitle("Loading Data...");
+						loadBarFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+						loadBarFrame.setLocationRelativeTo(null);
+						loadBarFrame.setResizable(false);
+						loadBarFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
-						// Load selected record from JComboBox to JTextField.
-						// Don't cast to record. Need to iterate on listofrec to
-						// get
-						// selected record
+						loadBarPanel.add(loadBar);
+						loadBarPanel.add(infotext);
+						loadBarPanel.add(cancel);
+						loadBarFrame.add(loadBarPanel);
+						loadBarFrame.setVisible(true);
+
+						// Lade ausgewählten Datensatz von JComboBox zu
+						// JTextField
 						Object selcObj = cm.getSelectedItem();
 						String ObjtoString = selcObj.toString();
 						GPRecordManager rm = new GPRecordManager();
 
-						GPRecord tmp = rm.getRecord(ObjtoString);
+						GPRecord uiRec = rm.getRecord(ObjtoString);
 
-						fieldList[0].setText(tmp.getName());
+						fieldList[0].setText(uiRec.getName());
 
 						for (int i = 1; i < 6; i++) {
 
-							fieldList[i].setText(tmp.getListOfSTerm().get(i - 1).getName());
+							fieldList[i].setText(uiRec.getListOfSTerm().get(i - 1).getName());
 
 						}
 
 						ArrayList<String> listtoTb = new ArrayList<String>();
 						for (int i = 0; i < 5; i++) {
-							listtoTb.add(tmp.getListOfSTerm().get(i).getName());
+							listtoTb.add(uiRec.getListOfSTerm().get(i).getName());
 
 						}
-						final Thread t = new Thread(new GPParseDataToInterface(listtoTb, GPExcelJavaMapper.ExceltoJava(of), meinLadebalken,UIGui.this));
+						final Thread t = new Thread(new GPParseDataToInterface(listtoTb,
+								UIExcelJavaMapper.ExceltoJava(of), loadBar, UIGui.this));
 						t.start();
 
 						cancel.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent ev) {
-								meinLadebalken.setVisible(false);
-								
+								loadBar.setVisible(false);
+
 								while (t.isAlive()) {
-									
+
 								}
 								for (int i = 0; i < 6; i++) {
 
@@ -172,11 +175,9 @@ public class UIGui extends JFrame implements ActionListener {
 								JOptionPane.ERROR_MESSAGE);
 					}
 				} catch (Exception e) {
-
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+
 			}
 		});
 		uiDeleteB.addActionListener(new ActionListener() {
@@ -195,10 +196,11 @@ public class UIGui extends JFrame implements ActionListener {
 		uiResultB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
 				if (!fieldList[0].getText().equals("") && (!of.equals(null))) {
-					GPshowResultInChart chart = new GPshowResultInChart("Corelation",
+					UIshowResultInChart chart = new UIshowResultInChart("Corelation",
 							"correlation between searchterms and product", fieldList[0].getText(), of, box);
-
+					chart.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 					chart.pack();
+
 					RefineryUtilities.centerFrameOnScreen(chart);
 					chart.setVisible(true);
 
@@ -212,11 +214,11 @@ public class UIGui extends JFrame implements ActionListener {
 		uiDownloadB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
 				if (!fieldList[0].getText().equals("") && (!of.equals(null))) {
-					GPExcelJavaMapper e = new GPExcelJavaMapper();
+					UIExcelJavaMapper e = new UIExcelJavaMapper();
 
 					GPRecordManager rm = new GPRecordManager();
-					e.saveToExcel(GPGTrends.createRecordFromTable(rm.getRecord(fieldList[0].getText())),
-							GPExcelJavaMapper.ExceltoJava(of));
+					e.saveToExcel(GPGTrends.createRecordFromTableFile(rm.getRecord(fieldList[0].getText())),
+							UIExcelJavaMapper.ExceltoJava(of));
 
 				} else {
 					JOptionPane.showMessageDialog(null, "Please select file and record", "Inane error",
@@ -229,7 +231,7 @@ public class UIGui extends JFrame implements ActionListener {
 			public void actionPerformed(ActionEvent ev) {
 				try {
 					of.setFile();
-					jl[jl.length - 1].setText("Product:               " + GPExcelJavaMapper.ExceltoJava(of).getName());
+					jl[jl.length - 1].setText("Product:               " + UIExcelJavaMapper.ExceltoJava(of).getName());
 					jl[jl.length - 1].paintImmediately(jl[jl.length - 1].getVisibleRect());
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -238,8 +240,6 @@ public class UIGui extends JFrame implements ActionListener {
 			}
 
 		});
-
-		this.setLayout(null);
 
 		addingTextfieldsandLabels(this, fieldList, jl, box);
 
@@ -258,25 +258,28 @@ public class UIGui extends JFrame implements ActionListener {
 	}
 
 	public static void main(String[] args) {
-
+		// new SQLliteDB();
 		new UIGui();
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
-	// adding an array of JTextFields to a JFrame
-	public void addingTextfieldsandLabels(JFrame jf, JTextField[] fieldList, JLabel[] jl, GPColorComboBox[] jcc) {
+	// Füge dem Main-Frame JTextField, JLabel und UIColorComboBox hinzu
+	public void addingTextfieldsandLabels(JFrame jf, JTextField[] fieldList, JLabel[] jl, UIColorComboBox[] jcc) {
 
 		GPRecordManager rm = new GPRecordManager();
-		new GPExcelJavaMapper();
+		new UIExcelJavaMapper();
+		String ObjtoString = null;
 
 		Object selcObj = cm.getSelectedItem();
-		String ObjtoString = selcObj.toString();
-
+		if (selcObj==null) {
+			ObjtoString ="";
+		} else {
+			ObjtoString = selcObj.toString();
+		}
 		rm.getRecord(ObjtoString);
 
 		int y = 10;
@@ -286,7 +289,7 @@ public class UIGui extends JFrame implements ActionListener {
 				jl[i] = new JLabel("Record:");
 			} else {
 				jl[i] = new JLabel("Searchterm:");
-				jcc[i - 1] = new GPColorComboBox();
+				jcc[i - 1] = new UIColorComboBox();
 				jcc[i - 1].setSelectedIndex(i - 1);
 				jf.add(jcc[i - 1]);
 				jcc[i - 1].setBounds(250, y, 100, 20);
@@ -303,7 +306,7 @@ public class UIGui extends JFrame implements ActionListener {
 
 		}
 		jl[jl.length - 1] = new JLabel("Product: ");
-		jcc[jcc.length - 1] = new GPColorComboBox();
+		jcc[jcc.length - 1] = new UIColorComboBox();
 		jcc[jcc.length - 1].setSelectedIndex(jcc.length - 1);
 		jf.add(jcc[jcc.length - 1]);
 		jf.add(jl[jl.length - 1]);

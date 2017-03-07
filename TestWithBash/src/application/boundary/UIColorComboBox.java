@@ -1,4 +1,4 @@
-package application.control;
+package application.boundary;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -9,13 +9,16 @@ import javax.swing.*;
 
 /**
  *
- * @author sharath
+ * @author sharath modified by ajk
  */
-public class GPColorComboBox extends JComboBox {
+//Mit dieser Klasse werden die Daten für das Auswahlmenü 
+//der Farben aufbereitet.
+
+public class UIColorComboBox extends JComboBox {
 
 	static Hashtable<String, Color> colors;
 
-	public GPColorComboBox() {
+	public UIColorComboBox() {
 		super();
 		DefaultComboBoxModel model = new DefaultComboBoxModel();
 		Enumeration colorNames = addColors().keys();
@@ -34,7 +37,6 @@ public class GPColorComboBox extends JComboBox {
 		super.setSelectedItem(anObject);
 
 		setBackground((Color) colors.get(anObject));
-//		setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
 		if (anObject.toString().equals("BLACK") || anObject.toString().equals("DARK_GRAY")) {
 			setForeground(Color.white);
 		}
@@ -85,7 +87,6 @@ public class GPColorComboBox extends JComboBox {
 			} else {
 				setBorder(null);
 			}
-//			setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
 			setBackground(color);
 			setText(name);
 			setForeground(Color.black);

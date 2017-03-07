@@ -2,11 +2,11 @@ package application.control;
 
 import java.util.Calendar;
 import java.util.TreeMap;
-
+//Entitätsklasse für die Produktabsatzdaten
 public class GPProduct {
 
 	private String name;
-	private TreeMap<Calendar, Double> orderDRequest;
+	private TreeMap<Calendar, Integer> orderDRequest;
 
 	public String getName() {
 		return name;
@@ -16,11 +16,11 @@ public class GPProduct {
 		this.name = name;
 	}
 
-	public TreeMap<Calendar, Double> getOrderDRequest() {
+	public TreeMap<Calendar, Integer> getOrderDRequest() {
 		return orderDRequest;
 	}
 
-	public void setOrderDRequest(TreeMap<Calendar, Double> orderRequest) {
+	public void setOrderDRequest(TreeMap<Calendar, Integer> orderRequest) {
 		this.orderDRequest = orderRequest;
 	}
 

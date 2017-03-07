@@ -7,13 +7,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-
+//Verbindung zur SQLLite Datenbank aufbauen und SQL-Befehle auf die Datenbank anwenden
 public class RecordToDB {
 	private Connection dbConnection;
 
 	public ArrayList<String> pullRecordFromDb(String s) {
 
-		ArrayList<String> tmp = new ArrayList<String>();
+		ArrayList<String> recArr = new ArrayList<String>();
 		try {
 			dbConnection = DriverManager.getConnection("jdbc:sqlite:sample.de");
 			Statement preparedStatement = dbConnection.createStatement();
@@ -22,10 +22,9 @@ public class RecordToDB {
 					.executeQuery("SELECT * FROM record WHERE Recordname='" + s + "'");
 
 			if (selectAllRecords.next()) {
-				tmp.add(selectAllRecords.getString("Recordname"));
+				recArr.add(selectAllRecords.getString("Recordname"));
 				for (int i = 1; i <= 5; i++) {
-					tmp.add(selectAllRecords.getString("Searchterm" + i));
-					System.out.println(selectAllRecords.getString("Searchterm" + i));
+					recArr.add(selectAllRecords.getString("Searchterm" + i));
 				}
 
 			}
@@ -47,7 +46,7 @@ public class RecordToDB {
 			}
 		}
 
-		return tmp;
+		return recArr;
 
 	}
 
@@ -70,7 +69,6 @@ public class RecordToDB {
 			// execute insert SQL stetement
 			preparedStatement.executeUpdate();
 
-			System.out.println("Record was insert into DBUSER table!");
 
 		} catch (SQLException e) {
 
@@ -107,7 +105,7 @@ public class RecordToDB {
 		String deleteFromTableSQL = "DELETE FROM record WHERE Recordname='" + s + "'";
 
 		try {
-			dbConnection = DriverManager.getConnection("jdbc:sqlite:sample.de");
+			dbConnection = DriverManager.getConnection("jdbc:sqlite:recordDB");
 			preparedStatement = dbConnection.createStatement();
 
 			// execute insert SQL stetement
@@ -147,7 +145,7 @@ public class RecordToDB {
 		ArrayList<String> ard = new ArrayList<String>();
 
 		try {
-			dbConnection = DriverManager.getConnection("jdbc:sqlite:sample.de");
+			dbConnection = DriverManager.getConnection("jdbc:sqlite:recordDB");
 			Statement preparedStatement = dbConnection.createStatement();
 			ResultSet selectAllRecords = preparedStatement.executeQuery("SELECT Recordname From record");
 			while (selectAllRecords.next()) {

@@ -1,9 +1,8 @@
 package application.control;
 
 public class GPCorrelationCalculater {
-
-	public static double getCorrelation(Double[] characteristic, Double[] characteristic2, boolean round) {
-		// TODO: check here that arrays are not null, of the same length etc
+	// Berechnung der Korrelation
+	public static double getCorrelation(Integer[] characteristic, Integer[] characteristic2) {
 
 		double sx = 0.0;
 		double sy = 0.0;
@@ -24,20 +23,17 @@ public class GPCorrelationCalculater {
 			sxy += x * y;
 		}
 
-		// covariation
+		// Berechnung der Kovarianz
 		double cov = sxy / n - sx * sy / n / n;
-		// standard error of x
+		// Standardabweichung für X
 		double sigmax = Math.sqrt(sxx / n - sx * sx / n / n);
-		// standard error of y
+		// Standardabweichung für Y
 		double sigmay = Math.sqrt(syy / n - sy * sy / n / n);
-
-		// correlation is just a normalized covariation
-		if (round) {
-
-			return Math.rint((cov / sigmax / sigmay) * 1000) / 1000.;
-
-		} else {
-			return cov / sigmax / sigmay;
+		// Fange Standardabweichung = 0 ab und gebe 0.0 statt NaN zurück
+		if (java.lang.Double.isNaN(cov / (sigmax * sigmay))) {
+			return 0.0;
 		}
+		return Math.rint((cov / (sigmax * sigmay)) * 1000) / 1000.;
+
 	}
 }

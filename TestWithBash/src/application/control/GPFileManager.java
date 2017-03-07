@@ -12,7 +12,6 @@ public class GPFileManager {
 	
 	public void setFile(){
 		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-			// get the file
 			this.file = fileChooser.getSelectedFile();
 			System.out.println(file.getName());
 		} else {

@@ -9,28 +9,26 @@ import java.util.GregorianCalendar;
 import java.util.Scanner;
 
 public class GPGTrends {
-
-	public static GPRecord createRecordFromTable(GPRecord re) {
-		for(int i=0;i<re.getListOfSTerm().size();i++){
-			if(re.getListOfSTerm().get(i).getName().equals("")){
-				re.getListOfSTerm().remove(i);
+	// Selektiere die Daten aus dem String und speichere sie in ein Record
+	public static GPRecord createRecordFromTableFile(GPRecord record) {
+		for (int i = 0; i < record.getListOfSTerm().size(); i++) {
+			if (record.getListOfSTerm().get(i).getName().equals("")) {
+				record.getListOfSTerm().remove(i);
 			}
 		}
-		
-		
-		GPRecord tmp = new GPRecord(re);
 
+		GPRecord returnRecord = new GPRecord(record);
 
-
+		Collections.sort(record.getListOfSTerm(), new Comparator<GPSearchterm>() {
+			@Override
+			public int compare(GPSearchterm s1, GPSearchterm s2) {
+				return s1.getName().compareToIgnoreCase(s2.getName());
+			}
+		});
 		Scanner sc = null;
 		try {
-			Collections.sort(re.getListOfSTerm(), new Comparator<GPSearchterm>() {
-				@Override
-				public int compare(GPSearchterm s1, GPSearchterm s2) {
-					return s1.getName().compareToIgnoreCase(s2.getName());
-				}
-			});
 			sc = new Scanner(new File("C:\\Users\\Adrian\\Documents\\pytrends-master1.2\\examples\\table.txt"));
+			// sc = new Scanner(new File("table.txt"));
 			sc.nextLine();
 			sc.nextLine();
 
@@ -54,13 +52,14 @@ public class GPGTrends {
 				Calendar calendar = new GregorianCalendar(Integer.parseInt(year), Integer.parseInt(month) - 1,
 						Integer.parseInt(day));
 
-				for (int i = 0; i < re.getListOfSTerm().size(); i++) {
+				for (int i = 0; i < record.getListOfSTerm().size(); i++) {
 
 					try {
-						re.getListOfSTerm().get(i).addDateAndPopularity(calendar, Double.parseDouble(sc.next()));
+						record.getListOfSTerm().get(i).addDateAndPopularity(calendar,
+								(int) Double.parseDouble(sc.next()));
 
 					} catch (NumberFormatException e) {
-						re.getListOfSTerm().get(i).addDateAndPopularity(calendar, 0.0);
+						record.getListOfSTerm().get(i).addDateAndPopularity(calendar, 0);
 					}
 				}
 
@@ -71,17 +70,17 @@ public class GPGTrends {
 		}
 		sc.close();
 
-		for (int i = 0; i < re.getListOfSTerm().size(); i++) {
-			for (int l = 0; l < re.getListOfSTerm().size(); l++) {
-				if (tmp.getListOfSTerm().get(i).getName().equals(re.getListOfSTerm().get(l).getName())) {
+		for (int i = 0; i < record.getListOfSTerm().size(); i++) {
+			for (int l = 0; l < record.getListOfSTerm().size(); l++) {
+				if (returnRecord.getListOfSTerm().get(i).getName().equals(record.getListOfSTerm().get(l).getName())) {
 
-					tmp.getListOfSTerm().get(i)
-							.setDateListFromSearchterm(re.getListOfSTerm().get(l).getDateListFromSearchterm());
+					returnRecord.getListOfSTerm().get(i)
+							.setDateListFromSearchterm(record.getListOfSTerm().get(l).getDateListFromSearchterm());
 				}
 			}
 		}
 
-		return tmp;
+		return returnRecord;
 
 	}
 

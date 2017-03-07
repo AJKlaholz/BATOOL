@@ -1,8 +1,8 @@
 package application.control;
 
 import java.util.ArrayList;
-
-public class GPRecord implements Cloneable {
+//Entitätsklasse für den Datensatz
+public class GPRecord {
 	private String name;
 	private ArrayList<GPSearchterm> listofsterm;
 
@@ -31,10 +31,6 @@ public class GPRecord implements Cloneable {
 	public ArrayList<GPSearchterm> getListOfSTerm() {
 		return this.listofsterm;
 
-	}
-
-	public Object clone() throws CloneNotSupportedException {
-		return super.clone();
 	}
 
 }

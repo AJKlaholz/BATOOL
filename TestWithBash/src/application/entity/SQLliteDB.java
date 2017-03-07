@@ -5,20 +5,21 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+//Erstelle SQLLite Datenbank mit den Spalten Recordname und Searchterm 1-5
 public class SQLliteDB {
 	public SQLliteDB() {
-		// load the sqlite-JDBC driver using the current class loader
+
+		Connection connection = null;
 		try {
 			Class.forName("org.sqlite.JDBC");
 
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
-		Connection connection = null;
 
 		try {
-			connection = DriverManager.getConnection("jdbc:sqlite:sample.de");
+			connection = DriverManager.getConnection("jdbc:sqlite:recordDB");
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30); // set timeout to 30 sec.
 
@@ -32,7 +33,7 @@ public class SQLliteDB {
 			try {
 				if (connection != null)
 					connection.close();
-			} catch (SQLException e) { // Use SQLException class instead.
+			} catch (SQLException e) { 
 				System.err.println(e);
 			}
 		}
