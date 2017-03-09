@@ -10,9 +10,11 @@ import javax.swing.*;
 /**
  *
  * @author sharath modified by ajk
+ *
+ * Mit dieser Klasse werden die Farben für das Dropdown-Menü  erzeugt
+ *
  */
-//Mit dieser Klasse werden die Daten für das Auswahlmenü 
-//der Farben aufbereitet.
+
 
 public class UIColorComboBox extends JComboBox {
 

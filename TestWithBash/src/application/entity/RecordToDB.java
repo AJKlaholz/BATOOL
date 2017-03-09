@@ -15,11 +15,11 @@ public class RecordToDB {
 
 		ArrayList<String> recArr = new ArrayList<String>();
 		try {
-			dbConnection = DriverManager.getConnection("jdbc:sqlite:sample.de");
+			dbConnection = DriverManager.getConnection("jdbc:sqlite:recordTable");
 			Statement preparedStatement = dbConnection.createStatement();
 
 			ResultSet selectAllRecords = preparedStatement
-					.executeQuery("SELECT * FROM record WHERE Recordname='" + s + "'");
+					.executeQuery("SELECT * FROM recordTable WHERE Recordname='" + s + "'");
 
 			if (selectAllRecords.next()) {
 				recArr.add(selectAllRecords.getString("Recordname"));
@@ -54,12 +54,12 @@ public class RecordToDB {
 
 		PreparedStatement preparedStatement = null;
 
-		String insertTableSQL = "INSERT INTO record"
+		String insertTableSQL = "INSERT INTO recordTable"
 				+ "(Recordname, Searchterm1, Searchterm2, Searchterm3, Searchterm4, Searchterm5) VALUES"
 				+ "(?,?,?,?,?,?)";
 
 		try {
-			dbConnection = DriverManager.getConnection("jdbc:sqlite:sample.de");
+			dbConnection = DriverManager.getConnection("jdbc:sqlite:recordTable");
 			preparedStatement = dbConnection.prepareStatement(insertTableSQL);
 
 			for (int i = 1; i <= rsql.size(); i++) {
@@ -102,10 +102,10 @@ public class RecordToDB {
 
 		Statement preparedStatement = null;
 
-		String deleteFromTableSQL = "DELETE FROM record WHERE Recordname='" + s + "'";
+		String deleteFromTableSQL = "DELETE FROM recordTable WHERE Recordname='" + s + "'";
 
 		try {
-			dbConnection = DriverManager.getConnection("jdbc:sqlite:recordDB");
+			dbConnection = DriverManager.getConnection("jdbc:sqlite:recordTable");
 			preparedStatement = dbConnection.createStatement();
 
 			// execute insert SQL stetement
@@ -145,9 +145,9 @@ public class RecordToDB {
 		ArrayList<String> ard = new ArrayList<String>();
 
 		try {
-			dbConnection = DriverManager.getConnection("jdbc:sqlite:recordDB");
+			dbConnection = DriverManager.getConnection("jdbc:sqlite:recordTable");
 			Statement preparedStatement = dbConnection.createStatement();
-			ResultSet selectAllRecords = preparedStatement.executeQuery("SELECT Recordname From record");
+			ResultSet selectAllRecords = preparedStatement.executeQuery("SELECT Recordname From recordTable");
 			while (selectAllRecords.next()) {
 
 				ard.add((selectAllRecords.getString("Recordname")));

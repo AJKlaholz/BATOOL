@@ -11,7 +11,7 @@ import java.util.Scanner;
 public class GPGTrends {
 	// Selektiere die Daten aus dem String und speichere sie in ein Record
 	public static GPRecord createRecordFromTableFile(GPRecord record) {
-		for (int i = 0; i < record.getListOfSTerm().size(); i++) {
+		for (int i = record.getListOfSTerm().size()-1; i >= 0; i--) {
 			if (record.getListOfSTerm().get(i).getName().equals("")) {
 				record.getListOfSTerm().remove(i);
 			}
@@ -27,8 +27,8 @@ public class GPGTrends {
 		});
 		Scanner sc = null;
 		try {
-			sc = new Scanner(new File("C:\\Users\\Adrian\\Documents\\pytrends-master1.2\\examples\\table.txt"));
-			// sc = new Scanner(new File("table.txt"));
+//			sc = new Scanner(new File("C:\\Users\\Adrian\\Documents\\pytrends-master1.2\\examples\\table.txt"));
+			sc = new Scanner(new File("sources\\table.txt"));
 			sc.nextLine();
 			sc.nextLine();
 

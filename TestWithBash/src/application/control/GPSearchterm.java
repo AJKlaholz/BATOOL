@@ -1,6 +1,5 @@
 package application.control;
 
-import java.awt.Color;
 import java.util.Calendar;
 import java.util.TreeMap;
 //Entitätsklasse für den Suchbegriff

@@ -1,7 +1,6 @@
 package application.boundary;
 
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ import application.control.GPParseDataToInterface;
 import application.control.GPRecordManager;
 import application.control.GPRecord;
 import application.control.GPSearchterm;
-import application.entity.SQLliteDB;
+import application.entity.CreateRecordDB;
 import application.control.GPFileManager;
 
 public class UIGui extends JFrame implements ActionListener {
@@ -258,7 +257,6 @@ public class UIGui extends JFrame implements ActionListener {
 	}
 
 	public static void main(String[] args) {
-		// new SQLliteDB();
 		new UIGui();
 	}
 
@@ -275,8 +273,8 @@ public class UIGui extends JFrame implements ActionListener {
 		String ObjtoString = null;
 
 		Object selcObj = cm.getSelectedItem();
-		if (selcObj==null) {
-			ObjtoString ="";
+		if (selcObj == null) {
+			ObjtoString = "";
 		} else {
 			ObjtoString = selcObj.toString();
 		}

@@ -60,8 +60,8 @@ public class GPParseDataToInterface implements Runnable {
 
 		PrintWriter writer;
 		try {
-			// writer = new PrintWriter("table.old");
-			writer = new PrintWriter("C:\\Users\\Adrian\\Documents\\pytrends-master1.2\\examples\\table.old");
+			 writer = new PrintWriter("table.old");
+//			writer = new PrintWriter("C:\\Users\\Adrian\\Documents\\pytrends-master1.2\\examples\\table.old");
 
 			writer.print("");
 			writer.close();
@@ -70,8 +70,8 @@ public class GPParseDataToInterface implements Runnable {
 			e1.printStackTrace();
 		}
 
-		setCommand("C:\\Users\\Adrian\\Documents\\pytrends-master1.2\\examples");
-		// setCommand(".");
+//		setCommand("C:\\Users\\Adrian\\Documents\\pytrends-master1.2\\examples");
+		 setCommand("sources");
 		jpb.setMinimum(counter);
 		jpb.setMaximum(numberOfMonths);
 		while (counter < numberOfMonths) {
@@ -83,10 +83,10 @@ public class GPParseDataToInterface implements Runnable {
 			}
 			try {
 				if (month < 10) {
-					exec("py testjava.py \"" + s + "\" 0" + month + "/" + startYear + " >> table.old");
+					exec("py client.py \"" + s + "\" 0" + month + "/" + startYear + " >> table.old");
 
 				} else {
-					exec("py testjava.py \"" + s + "\"  " + month + "/" + startYear + " >> table.old");
+					exec("py client.py \"" + s + "\"  " + month + "/" + startYear + " >> table.old");
 				}
 				exec("removelines > table.txt");
 			} catch (InterruptedException e) {
